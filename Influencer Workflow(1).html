@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Influencer Workflow</title>
+<style>
+:root{--bg:#f4f6f5;--sf:#fff;--tx:#18211f;--mu:#68736f;--bd:#dde3e0;--pr:#0f766e;--pt:#fff;--g:#e8ecea;--gt:#44504c;--b:#dbeafe;--bt:#1e40af;--a:#fef3c7;--at:#92400e;--k:#dcfce7;--kt:#166534;--r:#fee2e2;--rt:#991b1b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101514;--sf:#1a2220;--tx:#e8eeec;--mu:#94a09b;--bd:#2c3835;--pr:#2dd4bf;--pt:#06201d;--g:#2a3331;--gt:#b4c0bb;--b:#1e3a5f;--bt:#bfdbfe;--a:#4a3a10;--at:#fde68a;--k:#14391f;--kt:#bbf7d0;--r:#4c1d1d;--rt:#fecaca}}
+:root[data-theme="dark"]{--bg:#101514;--sf:#1a2220;--tx:#e8eeec;--mu:#94a09b;--bd:#2c3835;--pr:#2dd4bf;--pt:#06201d;--g:#2a3331;--gt:#b4c0bb;--b:#1e3a5f;--bt:#bfdbfe;--a:#4a3a10;--at:#fde68a;--k:#14391f;--kt:#bbf7d0;--r:#4c1d1d;--rt:#fecaca}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.55 "Noto Sans Thai","Sarabun",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx)}
+main{padding:14px 14px 96px;max-width:1000px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--sf);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--mu);padding:8px 2px;font:inherit;font-size:12px;cursor:pointer}
+nav button b{display:block;font-size:18px;font-weight:400}
+nav button.on{color:var(--pr);font-weight:600}
+.lg{display:none}
+@media(min-width:800px){body{display:flex}nav{position:sticky;top:0;height:100vh;width:200px;flex-direction:column;justify-content:flex-start;border-top:0;border-right:1px solid var(--bd);padding:16px 8px;flex:none}nav button{flex:none;text-align:left;font-size:15px;padding:10px 12px;border-radius:8px}nav button b{display:inline;margin-right:8px}nav button.on{background:var(--g)}main{flex:1;padding:24px 28px}.lg{display:block;font-weight:700;padding:4px 12px 14px;color:var(--pr)}}
+h1{font-size:20px;margin:0 0 12px}h3{margin:0 0 10px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.bar h1{flex:1;margin:0;min-width:140px}
+input,select,textarea{font:inherit;color:var(--tx);background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;width:100%}
+.bar input,.bar select{width:auto;flex:1;min-width:120px}
+textarea{min-height:90px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--pr);outline-offset:1px}
+label{display:block;font-size:13px;color:var(--mu);margin-bottom:10px}label input,label select,label textarea{margin-top:3px;color:var(--tx);font-size:15px}
+.bt{font:inherit;border:1px solid var(--bd);background:var(--sf);color:var(--tx);padding:7px 12px;border-radius:8px;cursor:pointer;min-height:36px}
+.bt.p{background:var(--pr);color:var(--pt);border-color:var(--pr);font-weight:600}.bt.d{color:var(--rt)}.bt.s{padding:4px 9px;font-size:13px;min-height:30px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+.st{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px;text-align:left;font:inherit;color:var(--tx);cursor:pointer}
+.st strong{display:block;font-size:26px;line-height:1.1}.st span{font-size:13px;color:var(--mu)}
+.st.hot{border-color:var(--rt)}.st.hot strong{color:var(--rt)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{flex:1}
+.mu{color:var(--mu);font-size:13px}.nm{font-weight:600}
+.bd{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;background:var(--g);color:var(--gt);white-space:nowrap}
+.bd.b{background:var(--b);color:var(--bt)}.bd.a{background:var(--a);color:var(--at)}.bd.k{background:var(--k);color:var(--kt)}.bd.r{background:var(--r);color:var(--rt)}
+.late{color:var(--rt);font-weight:600}
+.lk{display:inline-block;padding:2px 9px;border:1px solid var(--bd);border-radius:6px;font-size:13px;color:var(--pr);text-decoration:none}
+.card select.q{width:auto;padding:3px 8px;font-size:13px}
+.empty{text-align:center;color:var(--mu);padding:32px 12px}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.md{background:var(--sf);width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:16px;border-radius:14px 14px 0 0}
+@media(min-width:700px){.mb{align-items:center}.md{border-radius:14px}}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:620px}td,th{padding:5px;border-bottom:1px solid var(--bd);text-align:left;font-size:13px;vertical-align:middle}td input{padding:4px 6px;font-size:13px}
+#t{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 16px;border-radius:8px;z-index:30;display:none;font-size:14px}
+.warn{background:var(--a);color:var(--at);padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:13px}
+</style></head><body>
+<nav id="nav"></nav><main id="main"></main><div id="m"></div><div id="t"></div>
+<script>
+var KEY='iwms1',S={inf:[],camp:[],con:[]},V='dash',F={part:'',camp:'',st:'',grp:'',when:'',q:''},IQ={q:'',t:''},IMP=[],memOnly=false;
+try{var raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){memOnly=true}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){memOnly=true}}
+var P1=['ยังไม่ได้ติดต่อ','ติดต่อแล้ว','รอการตอบกลับ','ติดตามแล้ว','ได้รับราคาแล้ว','กำลังเจรจา','ยืนยันราคาแล้ว','ปฏิเสธงาน','ไม่สามารถติดต่อได้'];
+var P2=['ยังไม่ได้ติดต่อ','ส่งงานเสนอแล้ว','รอการตอบกลับ','ติดตามแล้ว','สนใจรับงาน','กำลังพิจารณา','ยืนยันรับงาน','ปฏิเสธงาน','ไม่สามารถติดต่อได้'];
+var CLOSED=['ปฏิเสธงาน','ไม่สามารถติดต่อได้','ยืนยันราคาแล้ว','ยืนยันรับงาน'],WAIT=['ติดต่อแล้ว','ส่งงานเสนอแล้ว','รอการตอบกลับ','ติดตามแล้ว'],INTR=['ได้รับราคาแล้ว','กำลังเจรจา','ยืนยันราคาแล้ว','สนใจรับงาน','กำลังพิจารณา','ยืนยันรับงาน'];
+var COL={'ยังไม่ได้ติดต่อ':'','ติดต่อแล้ว':'b','ส่งงานเสนอแล้ว':'b','รอการตอบกลับ':'a','ติดตามแล้ว':'a','กำลังเจรจา':'a','กำลังพิจารณา':'a','ปฏิเสธงาน':'r','ไม่สามารถติดต่อได้':'r'};
+var TYPES=['Beauty','Food','Lifestyle','Fashion','Travel','Tech','Family','อื่นๆ'],CH=['TikTok','Instagram','Facebook','Lemon8','LINE','Email','อื่นๆ'],CS=['ร่าง','กำลังดำเนินการ','เสร็จสิ้น','ยกเลิก'];
+var SOC=['tiktok','instagram','facebook','lemon8'],SN={tiktok:'TikTok',instagram:'Instagram',facebook:'Facebook',lemon8:'Lemon8',line:'LINE',email:'Email',other:'อื่นๆ'};
+var $=function(s){return document.querySelector(s)};
+function h(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function pad(n){return String(n).padStart(2,'0')}
+function ds(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function today(){return ds(new Date())}
+function addDays(n){var d=new Date();d.setDate(d.getDate()+n);return ds(d)}
+function fd(d){return d?d.split('-').reverse().join('/'):'-'}
+function v(id){var e=document.getElementById(id);return e?e.value.trim():''}
+function toast(t){var e=$('#t');e.textContent=t;e.style.display='block';clearTimeout(toast.k);toast.k=setTimeout(function(){e.style.display='none'},2200)}
+function inf(id){return S.inf.find(function(x){return x.id==id})}
+function camp(id){return S.camp.find(function(x){return x.id==id})}
+function ST(p){return p==1?P1:P2}
+function isClosed(c){return CLOSED.indexOf(c.st)>=0}
+function isDue(c){return !isClosed(c)&&(c.st==='ยังไม่ได้ติดต่อ'||(c.next&&c.next<=today()))}
+function isOver(c){return !isClosed(c)&&c.next&&c.next<today()}
+var GRP={wait:function(c){return WAIT.indexOf(c.st)>=0},contacted:function(c){return c.st!=='ยังไม่ได้ติดต่อ'},replied:function(c){return INTR.indexOf(c.st)>=0||c.st==='ปฏิเสธงาน'},intr:function(c){return INTR.indexOf(c.st)>=0},rej:function(c){return c.st==='ปฏิเสธงาน'}};
+function badge(s){return '<span class="bd '+(COL[s]===undefined?'k':COL[s])+'">'+h(s)+'</span>'}
+function href(u){u=String(u||'').trim();if(!u)return '';return /^https?:\/\//i.test(u)?u:'https://'+u}
+/* ---------- link utils ---------- */
+function platOf(u){var x;try{x=new URL(href(u)).hostname.toLowerCase().replace(/^(www|m|mobile|vt|vm|l)\./,'')}catch(e){return 'other'}
+ if(/tiktok\.com$/.test(x))return 'tiktok';if(/instagram\.com$|instagr\.am$/.test(x))return 'instagram';if(/facebook\.com$|fb\.com$|fb\.watch$|fb\.me$/.test(x))return 'facebook';if(/lemon8/.test(x))return 'lemon8';if(/line\.me$|lin\.ee$/.test(x))return 'line';return 'other'}
+function norm(u){u=String(u||'').trim();if(!u)return '';if(u.indexOf('@')>0&&!/^https?:/i.test(u)&&u.indexOf('/')<0)return 'mail:'+u.toLowerCase();
+ try{var o=new URL(href(u)),p=o.pathname.replace(/\/+$/,'').toLowerCase(),id=o.searchParams.get('id');return o.hostname.toLowerCase().replace(/^(www|m|mobile)\./,'')+p+(id?'?id='+id:'')}catch(e){return u.toLowerCase()}}
+function keysOf(i){var k=[];SOC.concat(['line','email']).forEach(function(f){if(i[f]){var n=f==='email'?'mail:'+i.email.toLowerCase():(/^https?:|\.|\//i.test(i[f])?norm(i[f]):'line:'+i[f].toLowerCase().replace(/^@/,''));k.push(n)}});return k}
+function findDup(o,ig){var k=keysOf(o);return S.inf.find(function(x){if(x.id===ig)return false;if(o.name&&x.name.toLowerCase()===o.name.toLowerCase())return true;return keysOf(x).some(function(a){return k.indexOf(a)>=0})})}
+function guessName(u){var m=String(u).match(/@([\w.\-]+)/);if(m)return m[1];try{var p=new URL(href(u)),s=p.pathname.split('/').filter(Boolean);if(platOf(u)==='instagram'&&s[0]&&['p','reel','reels','stories'].indexOf(s[0])<0)return s[0];if(platOf(u)==='facebook'&&s[0]&&s[0]!=='profile.php'&&s[0]!=='share')return s[0]}catch(e){}return ''}
+/* ---------- modal ---------- */
+function closeM(){$('#m').innerHTML=''}
+function modal(t,body,ok,lbl){$('#m').innerHTML='<div class="mb" onclick="if(event.target==this)closeM()"><div class="md" role="dialog"><h3>'+t+'</h3><div>'+body+'</div><div class="ma"><button class="bt" onclick="closeM()">ปิด</button>'+(ok?'<button class="bt p" id="mok">'+(lbl||'บันทึก')+'</button>':'')+'</div></div></div>';if(ok)$('#mok').onclick=ok}
+function ask(msg,fn,lbl){modal('ยืนยัน','<p>'+h(msg)+'</p>',function(){closeM();fn()},lbl||'ยืนยัน')}
+function fld(id,l,val,type){return '<label>'+l+'<input id="'+id+'" type="'+(type||'text')+'" value="'+h(val)+'"></label>'}
+function area(id,l,val){return '<label>'+l+'<textarea id="'+id+'">'+h(val)+'</textarea></label>'}
+function sel(id,l,opts,val,dis){return '<label>'+l+'<select id="'+id+'"'+(dis?' disabled':'')+'>'+opts.map(function(o){var a=Array.isArray(o)?o:[o,o];return '<option value="'+h(a[0])+'"'+(a[0]==val?' selected':'')+'>'+h(a[1])+'</option>'}).join('')+'</select></label>'}
+/* ---------- nav / render ---------- */
+var NAV=[['dash','📊','ภาพรวม'],['fu','✅','ติดตาม'],['inf','👥','Influencer'],['camp','📣','แคมเปญ'],['imp','🔗','นำเข้าลิงก์']];
+function go(x){V=x;render();window.scrollTo(0,0)}
+function render(){$('#nav').innerHTML='<div class="lg">Influencer Workflow</div>'+NAV.map(function(n){return '<button class="'+(V===n[0]?'on':'')+'" onclick="go(\''+n[0]+'\')"><b>'+n[1]+'</b>'+n[2]+'</button>'}).join('');
+ var w=memOnly?'<div class="warn">เบราว์เซอร์นี้ไม่อนุญาตให้บันทึกข้อมูลถาวร ข้อมูลจะหายเมื่อปิดหน้านี้</div>':'';
+ $('#main').innerHTML=w+({dash:vDash,fu:vFu,inf:vInf,camp:vCamp,imp:vImp})[V]()}
+/* ---------- dashboard ---------- */
+function showFu(f){F={part:'',camp:'',st:'',grp:'',when:'',q:''};Object.assign(F,f);go('fu')}
+function vDash(){var c=S.con,n=function(f){return c.filter(f).length},t=today();
+ var cards=[['แคมเปญที่ดำเนินการ',S.camp.filter(function(x){return x.status==='กำลังดำเนินการ'}).length,'camp',0],['ติดต่อทั้งหมด',n(GRP.contacted),{grp:'contacted'}],['รอการตอบกลับ',n(GRP.wait),{grp:'wait'}],['ต้องติดตามวันนี้',n(function(x){return isDue(x)&&!isOver(x)}),{when:'today'}],['เกินกำหนด',n(isOver),{when:'over'},1],['ตอบกลับแล้ว',n(GRP.replied),{grp:'replied'}],['สนใจรับงาน',n(GRP.intr),{grp:'intr'}],['ปฏิเสธงาน',n(GRP.rej),{grp:'rej'}]];
+ var due=c.filter(isDue).sort(function(a,b){return (a.next||'0')<(b.next||'0')?-1:1}).slice(0,30);
+ return '<h1>ภาพรวมวันนี้ · '+fd(t)+'</h1><div class="grid">'+cards.map(function(x,i){return '<button class="st'+(x[3]&&x[1]?' hot':'')+'" onclick="'+(x[2]==='camp'?"go('camp')":'showFu('+h(JSON.stringify(x[2])).replace(/"/g,'&quot;')+')')+'"><strong>'+x[1]+'</strong><span>'+x[0]+'</span></button>'}).join('')+'</div>'
+ +'<h3>ต้องดำเนินการวันนี้ ('+c.filter(isDue).length+')</h3>'+(due.length?due.map(function(x){return fuRow(x)}).join(''):'<div class="empty">ไม่มีรายการค้าง เพิ่มรายการติดต่อได้ที่หน้าแคมเปญ</div>')}
+/* ---------- follow-up ---------- */
+function fuRow(c){var i=inf(c.inf),m=camp(c.camp);if(!i||!m)return '';
+ return '<div class="card"><div class="row"><span class="nm">'+h(i.name)+'</span><span class="bd '+(c.part==1?'b':'a')+'">PART '+c.part+'</span><span class="mu">'+h(m.name)+'</span><span class="sp"></span><select class="q" aria-label="สถานะ" onchange="setSt(\''+c.id+'\',this.value)">'+ST(c.part).map(function(s){return '<option'+(s===c.st?' selected':'')+'>'+s+'</option>'}).join('')+'</select></div>'
+ +'<div class="row mu" style="margin-top:6px"><span>ช่องทาง: '+h(c.ch||'-')+'</span><span>ล่าสุด: '+fd(c.last)+'</span><span class="'+(isOver(c)?'late':'')+'">ติดตาม: '+fd(c.next)+(isOver(c)?' (เกินกำหนด)':'')+'</span><span>ติดตามแล้ว '+c.cnt+' ครั้ง</span></div>'
+ +(c.note?'<div class="mu" style="margin-top:4px">📝 '+h(c.note)+'</div>':'')
+ +'<div class="row" style="margin-top:8px">'+badge(c.st)+links(i)+'<span class="sp"></span><button class="bt s p" onclick="logM(\''+c.id+'\')">บันทึกการติดต่อ</button><button class="bt s" onclick="histM(\''+c.id+'\')">ประวัติ</button><button class="bt s d" onclick="delCon(\''+c.id+'\')">ลบ</button></div></div>'}
+function links(i){var o='';SOC.forEach(function(f){if(i[f])o+='<a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(i[f]))+'">'+SN[f]+'</a> '});if(i.line)o+=/^https?:|line\.me|lin\.ee/i.test(i.line)?'<a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(i.line))+'">LINE</a> ':'<span class="bd">LINE: '+h(i.line)+'</span> ';if(i.email)o+='<a class="lk" href="mailto:'+h(i.email)+'">Email</a>';return o}
+function vFu(){var l=fil(),ps=[['','ทุก Part'],['1','PART 1 สอบถามราคา'],['2','PART 2 เสนอแคมเปญ']],all=P1.concat(P2).filter(function(x,i,a){return a.indexOf(x)===i});
+ return '<div class="bar"><h1>Follow-up Center</h1></div><div class="bar"><input id="fq" placeholder="ค้นหาชื่อ Influencer" value="'+h(F.q)+'" oninput="F.q=this.value;fuList()">'
+ +'<select onchange="F.part=this.value;render()">'+ps.map(function(p){return '<option value="'+p[0]+'"'+(F.part==p[0]?' selected':'')+'>'+p[1]+'</option>'}).join('')+'</select>'
+ +'<select onchange="F.camp=this.value;render()"><option value="">ทุกแคมเปญ</option>'+S.camp.map(function(m){return '<option value="'+m.id+'"'+(F.camp==m.id?' selected':'')+'>'+h(m.name)+'</option>'}).join('')+'</select>'
+ +'<select onchange="F.st=this.value;render()"><option value="">ทุกสถานะ</option>'+all.map(function(s){return '<option'+(F.st==s?' selected':'')+'>'+s+'</option>'}).join('')+'</select>'
+ +'<select onchange="F.when=this.value;render()">'+[['','ทุกวันที่'],['due','ต้องทำตอนนี้'],['today','ติดตามวันนี้'],['over','เกินกำหนด'],['up','กำหนดในอนาคต']].map(function(p){return '<option value="'+p[0]+'"'+(F.when==p[0]?' selected':'')+'>'+p[1]+'</option>'}).join('')+'</select></div>'
+ +(F.grp?'<div class="mu" style="margin-bottom:8px">กรองกลุ่ม: '+F.grp+' <button class="bt s" onclick="F.grp=\'\';render()">ล้าง</button></div>':'')+'<div id="fl">'+fuHtml(l)+'</div>'}
+function fil(){var q=F.q.toLowerCase(),t=today();return S.con.filter(function(c){var i=inf(c.inf);if(!i||!camp(c.camp))return false;if(F.part&&c.part!=F.part)return false;if(F.camp&&c.camp!=F.camp)return false;if(F.st&&c.st!==F.st)return false;if(F.grp&&!GRP[F.grp](c))return false;
+ if(F.when==='due'&&!isDue(c))return false;if(F.when==='today'&&!(isDue(c)&&!isOver(c)))return false;if(F.when==='over'&&!isOver(c))return false;if(F.when==='up'&&!(c.next>t&&!isClosed(c)))return false;if(q&&i.name.toLowerCase().indexOf(q)<0)return false;return true}).sort(function(a,b){return (a.next||'9')<(b.next||'9')?-1:1})}
+function fuHtml(l){return l.length?'<div class="mu" style="margin-bottom:6px">'+l.length+' รายการ</div>'+l.map(fuRow).join(''):'<div class="empty">ไม่พบรายการ</div>'}
+function fuList(){$('#fl').innerHTML=fuHtml(fil())}
+function con(id){return S.con.find(function(x){return x.id===id})}
+function setSt(id,s){var c=con(id);c.st=s;c.hist.push({d:today(),ch:c.ch,st:s,note:'เปลี่ยนสถานะ'});if(isClosed(c))c.next='';else if(WAIT.indexOf(s)>=0&&!c.next)c.next=addDays(3);if(s==='ติดตามแล้ว')c.cnt++;save();render();toast('อัปเดตสถานะแล้ว')}
+function logM(id){var c=con(id);modal('บันทึกการติดต่อ · '+h(inf(c.inf).name),sel('lc','ช่องทางที่ใช้',CH,c.ch||'TikTok')+sel('ls','สถานะ',ST(c.part),c.st)+fld('ln','วันที่ติดตามครั้งถัดไป',c.next||addDays(3),'date')+area('lt','บันทึกหลังคุยกัน',''),function(){
+ var s=v('ls');c.hist.push({d:today(),ch:v('lc'),st:s,note:v('lt')});c.last=today();c.ch=v('lc');if(s==='ติดตามแล้ว'&&c.st!==s||(s==='ติดตามแล้ว'&&c.st===s))c.cnt++;c.st=s;c.next=isClosed(c)?'':v('ln');if(v('lt'))c.note=v('lt');save();closeM();render();toast('บันทึกแล้ว')})}
+function histM(id){var c=con(id);modal('ประวัติการติดต่อ',c.hist.length?c.hist.slice().reverse().map(function(x){return '<div class="card"><div class="mu">'+fd(x.d)+' · '+h(x.ch||'-')+'</div>'+badge(x.st)+'<div>'+h(x.note)+'</div></div>'}).join(''):'<div class="empty">ยังไม่มีประวัติ</div>')}
+function delCon(id){ask('ลบรายการติดต่อนี้และประวัติทั้งหมด?',function(){S.con=S.con.filter(function(x){return x.id!==id});save();render()},'ลบ')}
+/* ---------- influencers ---------- */
+function vInf(){var q=IQ.q.toLowerCase(),l=S.inf.filter(function(i){if(IQ.t&&i.type!==IQ.t)return false;if(!q)return true;return (i.name+' '+keysOf(i).join(' ')+' '+SOC.concat(['line','email']).map(function(f){return i[f]||''}).join(' ')+' '+(i.note||'')).toLowerCase().indexOf(q)>=0});
+ return '<div class="bar"><h1>Influencer Database ('+S.inf.length+')</h1><button class="bt p" onclick="infM()">+ เพิ่ม</button></div><div class="bar"><input placeholder="ค้นหาชื่อ ลิงก์ LINE Email" value="'+h(IQ.q)+'" oninput="IQ.q=this.value;infList()"><select onchange="IQ.t=this.value;infList()"><option value="">ทุกประเภท</option>'+TYPES.map(function(t){return '<option'+(IQ.t===t?' selected':'')+'>'+t+'</option>'}).join('')+'</select></div><div id="il">'+infHtml(l)+'</div>'}
+function infHtml(l){return l.length?l.map(function(i){return '<div class="card"><div class="row"><span class="nm">'+h(i.name)+'</span>'+(i.type?'<span class="bd">'+h(i.type)+'</span>':'')+(i.followers?'<span class="mu">'+Number(i.followers).toLocaleString('th-TH')+' followers</span>':'')+'<span class="sp"></span><button class="bt s" onclick="infM(\''+i.id+'\')">แก้ไข</button><button class="bt s d" onclick="delInf(\''+i.id+'\')">ลบ</button></div><div class="row" style="margin-top:6px">'+links(i)+'</div>'+(i.note?'<div class="mu" style="margin-top:4px">'+h(i.note)+'</div>':'')+'</div>'}).join(''):'<div class="empty">ยังไม่มี Influencer กด “เพิ่ม” หรือใช้หน้านำเข้าลิงก์</div>'}
+function infList(){var q=IQ.q.toLowerCase();$('#il').innerHTML=infHtml(S.inf.filter(function(i){if(IQ.t&&i.type!==IQ.t)return false;return !q||(i.name+' '+SOC.concat(['line','email','note']).map(function(f){return i[f]||''}).join(' ')).toLowerCase().indexOf(q)>=0}))}
+function infM(id){var i=id?inf(id):{};modal(id?'แก้ไข Influencer':'เพิ่ม Influencer',fld('f_n','ชื่อ / ชื่อช่อง *',i.name)+'<div class="two">'+sel('f_t','ประเภท',[''].concat(TYPES),i.type)+fld('f_f','Followers',i.followers,'number')+'</div>'+fld('f_tiktok','ลิงก์ TikTok',i.tiktok)+fld('f_instagram','ลิงก์ Instagram',i.instagram)+fld('f_facebook','ลิงก์ Facebook',i.facebook)+fld('f_lemon8','ลิงก์ Lemon8',i.lemon8)+'<div class="two">'+fld('f_line','LINE ID / Link',i.line)+fld('f_email','Email',i.email,'email')+'</div>'+area('f_note','หมายเหตุ',i.note),function(){
+ var o={name:v('f_n'),type:v('f_t'),followers:v('f_f'),line:v('f_line'),email:v('f_email'),note:v('f_note')};SOC.forEach(function(f){o[f]=v('f_'+f)});
+ if(!o.name){toast('กรุณากรอกชื่อ');return}if(o.email&&!/^\S+@\S+\.\S+$/.test(o.email)){toast('รูปแบบ Email ไม่ถูกต้อง');return}
+ var fin=function(){if(id)Object.assign(i,o);else{o.id=uid();S.inf.push(o)}save();closeM();render();toast('บันทึกแล้ว')},d=findDup(o,id);if(d)ask('พบข้อมูลซ้ำกับ “'+d.name+'” ต้องการบันทึกต่อหรือไม่?',fin,'บันทึกต่อ');else fin()})}
+function delInf(id){var n=S.con.filter(function(c){return c.inf===id}).length;ask('ลบ Influencer นี้'+(n?' และรายการติดต่อ '+n+' รายการ':'')+'?',function(){S.inf=S.inf.filter(function(x){return x.id!==id});S.con=S.con.filter(function(c){return c.inf!==id});save();render()},'ลบ')}
+/* ---------- campaigns ---------- */
+function vCamp(){return '<div class="bar"><h1>แคมเปญ</h1><button class="bt s" onclick="backup()">สำรองข้อมูล</button><button class="bt p" onclick="campM()">+ สร้างแคมเปญ</button></div>'+(S.camp.length?S.camp.map(function(m){var cs=S.con.filter(function(c){return c.camp===m.id}),dn=cs.filter(isDue).length;
+ return '<div class="card"><div class="row"><span class="nm">'+h(m.name)+'</span><span class="bd '+(m.part==1?'b':'a')+'">PART '+m.part+' · '+(m.part==1?'สอบถามราคา':'เสนอแคมเปญ')+'</span><span class="bd">'+h(m.status)+'</span></div><div class="mu">'+h(m.brand)+(m.type?' · '+h(m.type):'')+' · '+fd(m.start)+' – '+fd(m.end)+'</div><div class="mu">Influencer '+cs.length+' คน · ต้องทำ '+dn+'</div>'
+ +'<div class="row" style="margin-top:8px"><button class="bt s p" onclick="addM(\''+m.id+'\')">+ เพิ่ม Influencer</button><button class="bt s" onclick="showFu({camp:\''+m.id+'\'})">ดู Follow-up</button><button class="bt s" onclick="briefM(\''+m.id+'\')">คัดลอก Brief</button><button class="bt s" onclick="campM(\''+m.id+'\')">แก้ไข</button><button class="bt s d" onclick="delCamp(\''+m.id+'\')">ลบ</button></div></div>'}).join(''):'<div class="empty">ยังไม่มีแคมเปญ สร้างแคมเปญแรกเพื่อเริ่มติดตามงาน</div>')}
+function campM(id){var m=id?camp(id):{part:'1',status:'กำลังดำเนินการ'},has=id&&S.con.some(function(c){return c.camp===id});modal(id?'แก้ไขแคมเปญ':'สร้างแคมเปญ',fld('c_n','ชื่อแคมเปญ *',m.name)+'<div class="two">'+fld('c_b','ชื่อแบรนด์',m.brand)+fld('c_ty','ประเภทแคมเปญ',m.type)+'</div>'+sel('c_p','ประเภทการทำงาน',[['1','PART 1: สอบถามราคา'],['2','PART 2: เสนอแคมเปญ']],m.part,has)+'<div class="two">'+fld('c_pl','Platform ที่ต้องการ',m.plat)+fld('c_mf','Followers ขั้นต่ำ',m.minF,'number')+fld('c_s','วันเริ่มต้น',m.start,'date')+fld('c_e','วันสิ้นสุด',m.end,'date')+'</div>'+sel('c_st','สถานะแคมเปญ',CS,m.status)+area('c_cd','เงื่อนไขของ Influencer',m.cond)+area('c_br','รายละเอียด Brief',m.brief)+area('c_sw','Scope of Work',m.sow),function(){
+ if(!v('c_n')){toast('กรุณากรอกชื่อแคมเปญ');return}if(v('c_s')&&v('c_e')&&v('c_e')<v('c_s')){toast('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น');return}
+ var o={name:v('c_n'),brand:v('c_b'),type:v('c_ty'),part:has?m.part:v('c_p'),plat:v('c_pl'),minF:v('c_mf'),start:v('c_s'),end:v('c_e'),status:v('c_st'),cond:v('c_cd'),brief:v('c_br'),sow:v('c_sw')};
+ if(id)Object.assign(m,o);else{o.id=uid();S.camp.push(o)}save();closeM();render();toast('บันทึกแล้ว')})}
+function delCamp(id){ask('ลบแคมเปญนี้และรายการติดต่อทั้งหมดในแคมเปญ?',function(){S.camp=S.camp.filter(function(x){return x.id!==id});S.con=S.con.filter(function(c){return c.camp!==id});save();render()},'ลบ')}
+function briefM(id){var m=camp(id),t='📌 '+m.name+'\nแบรนด์: '+m.brand+(m.plat?'\nPlatform: '+m.plat:'')+(m.minF?'\nFollowers ขั้นต่ำ: '+Number(m.minF).toLocaleString('th-TH'):'')+(m.start?'\nระยะเวลา: '+fd(m.start)+' – '+fd(m.end):'')+(m.cond?'\nคุณสมบัติ: '+m.cond:'')+(m.brief?'\n\nBrief:\n'+m.brief:'')+(m.sow?'\n\nScope of Work:\n'+m.sow:'');
+ modal('Brief สำหรับส่งให้ Influencer','<textarea id="bt" style="min-height:240px" readonly>'+h(t)+'</textarea>',function(){var e=$('#bt');e.select();var ok=false;try{ok=document.execCommand('copy')}catch(x){}try{if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){},function(){});ok=true}catch(x){}toast(ok?'คัดลอกแล้ว':'เลือกข้อความแล้ว กดคัดลอกเอง')},'คัดลอก')}
+function addM(id){var m=camp(id);window.AM={id:id,sel:{}};modal('เพิ่ม Influencer เข้า “'+h(m.name)+'”','<div class="bar"><input id="aq" placeholder="ค้นหา" oninput="addList()"><select id="at" onchange="addList()"><option value="">ทุกประเภท</option>'+TYPES.map(function(t){return '<option>'+t+'</option>'}).join('')+'</select></div>'+(m.minF?'<div class="mu">แสดงเฉพาะคนที่มี Followers ≥ '+Number(m.minF).toLocaleString('th-TH')+' หรือยังไม่ระบุ</div>':'')+'<div id="al" style="max-height:48vh;overflow:auto"></div>',function(){var ids=Object.keys(AM.sel).filter(function(k){return AM.sel[k]});ids.forEach(function(i){if(!S.con.some(function(c){return c.camp===id&&c.inf===i}))S.con.push({id:uid(),inf:i,camp:id,part:m.part,ch:'',st:'ยังไม่ได้ติดต่อ',last:'',next:today(),cnt:0,note:'',hist:[]})});save();closeM();render();toast('เพิ่ม '+ids.length+' คน')},'เพิ่มที่เลือก');addList()}
+function addList(){var m=camp(AM.id),q=v('aq').toLowerCase(),t=v('at');var l=S.inf.filter(function(i){if(S.con.some(function(c){return c.camp===AM.id&&c.inf===i.id}))return false;if(t&&i.type!==t)return false;if(m.minF&&i.followers&&Number(i.followers)<Number(m.minF))return false;return !q||i.name.toLowerCase().indexOf(q)>=0});
+ $('#al').innerHTML=l.length?l.map(function(i){return '<label class="row" style="margin:0;padding:6px 0;color:var(--tx)"><input type="checkbox" style="width:auto"'+(AM.sel[i.id]?' checked':'')+' onchange="AM.sel[\''+i.id+'\']=this.checked"><span>'+h(i.name)+'</span><span class="mu">'+h(i.type||'')+(i.followers?' · '+Number(i.followers).toLocaleString('th-TH'):'')+'</span></label>'}).join(''):'<div class="empty">ไม่พบ Influencer ที่เพิ่มได้</div>'}
+/* ---------- import ---------- */
+function mkRow(u,kind){var p=kind==='email'?'email':platOf(u);return {url:u,kind:kind||'link',plat:p,name:kind==='email'?'':guessName(u),sel:true}}
+function parseText(t){var rows=[],seen={},em=t.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/g)||[];em.forEach(function(e){rows.push(mkRow(e,'email'))});
+ var rest=t.replace(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/g,' '),us=rest.match(/https?:\/\/[^\s<>"'\u0E00-\u0E7F]+|\b(?:www\.)?(?:tiktok\.com|instagram\.com|facebook\.com|fb\.com|lemon8-app\.com|line\.me|lin\.ee)\/[^\s<>"'\u0E00-\u0E7F]+/gi)||[];
+ us.forEach(function(u){u=u.replace(/[.,;:!?)\]}】。]+$/,'');rows.push(mkRow(u))});return rows}
+function dupMap(){var m={};S.inf.forEach(function(i){keysOf(i).forEach(function(k){m[k]=i.name})});return m}
+function vImp(){return '<div class="bar"><h1>นำเข้าลิงก์</h1></div><div class="card"><label>วางข้อความหรือคอมเมนต์ (มีข้อความอื่นปนได้)<textarea id="it" style="min-height:140px" placeholder="วางคอมเมนต์ที่นี่ ระบบจะดึง TikTok / Instagram / Facebook / Lemon8 / LINE / Email ให้อัตโนมัติ"></textarea></label><button class="bt p" onclick="doParse()">แยกลิงก์</button></div><div id="ir">'+impHtml()+'</div>'}
+function doParse(){IMP=parseText($('#it').value);if(!IMP.length)toast('ไม่พบลิงก์หรืออีเมลในข้อความ');$('#ir').innerHTML=impHtml()}
+function impMark(){var dm=dupMap(),seen={};IMP.forEach(function(r){var k=r.kind==='email'?'mail:'+r.url.toLowerCase():r.plat==='line'&&!/\./.test(r.url)?'line:'+r.url.toLowerCase():norm(r.url);r.dup=dm[k]?'มีในระบบ: '+dm[k]:seen[k]?'ซ้ำในรายการนี้':'';seen[k]=1;if(r.dup)r.sel=false})}
+function impHtml(){if(!IMP.length)return '';impMark();var ok=IMP.filter(function(r){return r.sel}).length;
+ return '<div class="mu" style="margin:8px 0">พบ '+IMP.length+' รายการ · เลือกอยู่ '+ok+'</div><div class="sc"><table><tr><th></th><th>ประเภท</th><th>ลิงก์ / ข้อมูล</th><th>ชื่อ Influencer</th><th>สถานะ</th></tr>'+IMP.map(function(r,i){return '<tr><td><input type="checkbox" style="width:auto"'+(r.sel?' checked':'')+(r.dup?' disabled':'')+' onchange="IMP['+i+'].sel=this.checked;impSum()"></td><td><span class="bd '+(r.plat==='line'||r.plat==='email'?'a':'b')+'">'+SN[r.plat]+'</span></td><td><input value="'+h(r.url)+'" onchange="impEdit('+i+',this.value)"></td><td><input value="'+h(r.name)+'" placeholder="เพิ่มภายหลังได้" onchange="IMP['+i+'].name=this.value"></td><td>'+(r.dup?'<span class="bd r">'+h(r.dup)+'</span>':'<span class="bd k">ใหม่</span>')+'</td></tr>'}).join('')+'</table></div>'
+ +'<div class="card" style="margin-top:10px"><div class="two">'+sel('ip','เพิ่มเข้าแคมเปญ (ไม่บังคับ)',[['','ไม่เพิ่ม']].concat(S.camp.map(function(m){return [m.id,m.name+' (PART '+m.part+')']})),'')+sel('ity','ประเภท Influencer',[''].concat(TYPES),'')+'</div><div class="row"><button class="bt" onclick="IMP.forEach(function(r){if(!r.dup)r.sel=true});$(\'#ir\').innerHTML=impHtml()">เลือกทั้งหมด</button><button class="bt" onclick="IMP.forEach(function(r){r.sel=false});$(\'#ir\').innerHTML=impHtml()">ไม่เลือก</button><span class="sp"></span><button class="bt p" onclick="doImport()">นำเข้าที่เลือก</button></div></div>'}
+function impSum(){$('#ir').innerHTML=impHtml()}
+function impEdit(i,val){var r=IMP[i];val=val.trim();if(!val){IMP.splice(i,1)}else{var n=mkRow(val,/^[\w.+\-]+@[\w\-]+\.[\w.\-]+$/.test(val)?'email':'');n.name=r.name||n.name;IMP[i]=n}impSum()}
+function doImport(){var rows=IMP.filter(function(r){return r.sel&&!r.dup});if(!rows.length){toast('ยังไม่ได้เลือกรายการ');return}var cid=v('ip'),ty=v('ity'),m=cid?camp(cid):null,made=0;
+ rows.forEach(function(r){var o={id:uid(),name:r.name||guessName(r.url)||r.url.replace(/^https?:\/\/(www\.)?/,'').slice(0,40),type:ty,followers:'',tiktok:'',instagram:'',facebook:'',lemon8:'',line:'',email:'',note:''};
+  if(r.plat==='email')o.email=r.url;else if(r.plat==='line')o.line=r.url;else if(SOC.indexOf(r.plat)>=0)o[r.plat]=r.url;else o.note=r.url;S.inf.push(o);made++;
+  if(m)S.con.push({id:uid(),inf:o.id,camp:m.id,part:m.part,ch:'',st:'ยังไม่ได้ติดต่อ',last:'',next:today(),cnt:0,note:'',hist:[]})});
+ save();IMP=[];toast('นำเข้า '+made+' รายการแล้ว');go(m?'fu':'inf')}
+function backup(){var b=JSON.stringify(S,null,1);modal('สำรองข้อมูล','<p class="mu">คัดลอกข้อความนี้เก็บไว้ หรือวางข้อมูลที่เคยสำรองแล้วกดกู้คืน</p><textarea id="bk" style="min-height:200px">'+h(b)+'</textarea>',function(){try{var d=JSON.parse($('#bk').value);if(!d.inf||!d.camp||!d.con)throw 0;S=d;save();closeM();render();toast('กู้คืนแล้ว')}catch(e){toast('ข้อมูลไม่ถูกต้อง')}},'กู้คืนจากข้อความนี้')}
+render();
+</script><script>
+/* ===== Smart import v2: อ่านคอมเมนต์แบบมีไอดี ไม่ต้องมีลิงก์ ===== */
+var URLRE=/https?:\/\/[^\s<>"'\u0E00-\u0E7F]+|\b(?:www\.)?(?:tiktok\.com|instagram\.com|facebook\.com|fb\.com|lemon8-app\.com|line\.me|lin\.ee)\/[^\s<>"'\u0E00-\u0E7F]+/gi;
+var LBL=[['tiktok','(?:tik\\s*tok|ติ๊?ก\\s*ต[็๊]?อก|ทิกตอก)'],['instagram','(?:instagram|insta|ig|อินสตาแกรม|อินสตา)'],['facebook','(?:facebook|fb|เฟซบุ๊ก|เฟสบุ๊ก|เฟส)'],['lemon8','(?:lemon\\s*8|lemon|เลม่อน)'],['line','(?:line\\s*id|line|ไลน์\\s*ไอดี|ไอดีไลน์|ไลน์)']];
+var FOLRE=/(?:ผู้ติดตาม|ติดตาม|followers?|ฟอลโลเวอร์|ฟอล|follow)\s*[:：]?\s*([\d.,]+\s*(?:k|m|พัน|หมื่น|แสน|ล้าน)?)|([\d.,]+\s*(?:k|m))\s*(?:ผู้ติดตาม|followers?|ฟอล)/i;
+function pn(s){s=String(s).toLowerCase().replace(/[,\s]/g,'');var m=s.match(/^([\d.]+)(k|m|พัน|หมื่น|แสน|ล้าน)?$/);if(!m)return 0;var u={k:1e3,m:1e6,'พัน':1e3,'หมื่น':1e4,'แสน':1e5,'ล้าน':1e6}[m[2]]||1;return Math.round(parseFloat(m[1])*u)}
+function build(p,x){x=x.replace(/^@/,'');return {tiktok:'https://www.tiktok.com/@',instagram:'https://www.instagram.com/',facebook:'https://www.facebook.com/',lemon8:'https://www.lemon8-app.com/@'}[p]+x}
+function cleanU(u){return u.replace(/[.,;:!?)\]}】。]+$/,'')}
+function parsePerson(txt){var f={tiktok:'',instagram:'',facebook:'',lemon8:'',line:'',email:''},gen={},fol={},name='',cur='',extra=[];
+ var urls=(txt.match(URLRE)||[]).map(cleanU);txt=txt.replace(URLRE,' ');
+ var em=txt.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/);if(em){f.email=em[0];txt=txt.replace(em[0],' ')}
+ urls.forEach(function(u){var p=platOf(u);if(f[p]===''&&p!=='other')f[p]=u;else extra.push(u)});
+ txt.split(/\n/).forEach(function(L){var nm=L.match(/(?:ชื่อ|name)\s*[:：=]\s*(.+)/i);if(nm&&!name)name=nm[1].replace(/[^\p{L}\p{M}\p{N}\s._\-]/gu,'').replace(/\s*(นะคะ|นะครับ|นะค่ะ|ค่ะ|ครับ|คะ|จ้า|ค่า)\s*$/,'').trim();
+  for(var k=0;k<LBL.length;k++){var p=LBL[k][0],m=L.match(new RegExp('(?:^|[^a-zA-Z])'+LBL[k][1]+'\\s*[:：=\\-]?\\s*(@?)([A-Za-z0-9._\\-]*)','i'));if(!m)continue;cur=p;var hd=m[2].replace(/\.+$/,'');
+   if(hd){if(p!=='line'&&/^\d[\d.,]*(k|m)?$/i.test(hd)){fol[p]=pn(hd)}else if(!f[p]&&hd.length>=(p==='line'?3:2)){if(p==='line')f[p]=m[1]+hd;else{f[p]=build(p,hd);gen[p]=true}}}break}
+  var fm=L.match(FOLRE);if(fm&&cur){var n=pn(fm[1]||fm[2]);if(n)fol[cur]=n}});
+ var any=Object.keys(f).some(function(k){return f[k]})||Object.keys(fol).length;if(!any)return null;
+ var r={sel:true,name:name,f:f,gen:gen,fol:fol,extra:extra,camps:{},fl:Math.max.apply(null,Object.keys(fol).map(function(k){return fol[k]}).concat([0]))||''};
+ if(!r.name){var g=guessName(f.tiktok||f.instagram||f.facebook||'');r.name=g}return r}
+function parseText(t){var out=[];t.split(/\n\s*\n\s*\n|\n\s*(?:-{3,}|={3,}|_{3,})\s*\n/).forEach(function(b){b=b.trim();if(!b)return;var us=(b.match(URLRE)||[]).map(cleanU),cnt={},multi=false;us.forEach(function(u){var p=platOf(u);cnt[p]=(cnt[p]||0)+1;if(cnt[p]>1)multi=true});var ems=b.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/g)||[];
+  if(multi||ems.length>1){us.concat(ems).forEach(function(x){var r=parsePerson(x);if(r)out.push(r)})}else{var r=parsePerson(b);if(r)out.push(r)}});return out}
+function vImp(){return '<div class="bar"><h1>นำเข้าลิงก์</h1></div><div class="card"><label>วางคอมเมนต์ได้เลย (มีลิงก์ หรือมีแค่ไอดีก็ได้) · ถ้าวางหลายคนให้เว้น 2 บรรทัด หรือคั่นด้วย ---<textarea id="it" style="min-height:160px" placeholder="ชื่อ : ยู&#10;Tiktok : @un.oyn ผู้ติดตาม 8k&#10;Instagram : un.oyn ผู้ติดตาม 10K&#10;Line ID : 0927966142"></textarea></label><button class="bt p" onclick="doParse()">แยกข้อมูล</button></div><div id="ir">'+impHtml()+'</div>'}
+function doParse(){IMP=parseText($('#it').value);if(!IMP.length)toast('ไม่พบลิงก์ ไอดี หรืออีเมลในข้อความ');$('#ir').innerHTML=impHtml()}
+function impMark(){var dm={},seen={};S.inf.forEach(function(i){keysOf(i).forEach(function(k){dm[k]=i.name})});IMP.forEach(function(r){var ks=keysOf(Object.assign({name:r.name},r.f)),d='';ks.forEach(function(k){if(!d){if(dm[k])d='มีในระบบ: '+dm[k];else if(seen[k])d='ซ้ำในรายการนี้'}});ks.forEach(function(k){seen[k]=1});r.dup=d;r.nd=!d&&r.name&&S.inf.some(function(x){return x.name.toLowerCase()===r.name.toLowerCase()});if(d)r.sel=false})}
+function sugg(r){var pf=SOC.filter(function(p){return r.f[p]}),fl=Number(r.fl)||0;return S.camp.filter(function(m){return m.status==='กำลังดำเนินการ'||m.status==='ร่าง'}).map(function(m){var why='';if(m.minF){if(fl&&fl<Number(m.minF))return null;why=fl?'Followers '+fl.toLocaleString('th-TH')+' ผ่านเกณฑ์':'ยังไม่ทราบ Followers'}
+ if(m.plat){var pl=m.plat.toLowerCase();if(pf.length&&!pf.some(function(p){return pl.indexOf(p)>=0||(p==='instagram'&&/\big\b|อินสตา/.test(pl))||(p==='tiktok'&&pl.indexOf('ติ๊ก')>=0)}))return null}return {m:m,why:why}}).filter(Boolean)}
+function impHtml(){if(!IMP.length)return '';impMark();var ok=IMP.filter(function(r){return r.sel}).length;
+ return '<div class="mu" style="margin:8px 0">พบ '+IMP.length+' คน · เลือกอยู่ '+ok+' · ลิงก์ที่ “สร้างจากไอดี” ยังไม่ได้ตรวจว่ามีบัญชีจริง กด “เปิด” เพื่อเช็กก่อน</div>'+IMP.map(function(r,i){
+  var rows=['tiktok','instagram','facebook','lemon8','line','email'].map(function(p){var val=r.f[p],st='';
+   if(val){if(p==='line')st=/^https?:|line\.me|lin\.ee/i.test(val)?'<span class="bd k">LINE Link</span>':'<span class="bd a">ไอดี LINE: '+h(val)+'</span>';else if(p==='email')st='<span class="bd k">พบ</span>';else st=r.gen[p]?'<span class="bd a">สร้างจากไอดี</span> <a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(val))+'">เปิด</a>':'<span class="bd k">พบลิงก์</span> <a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(val))+'">เปิด</a>'}
+   else{st='<span class="bd r">ไม่พบ</span>';if(SOC.indexOf(p)>=0&&r.name)st+=' <a class="lk" target="_blank" rel="noopener noreferrer" href="https://www.google.com/search?q='+encodeURIComponent(r.name+' '+SN[p])+'">ค้นหา</a>';if(r.fol[p])st+=' <span class="mu">พบตัวเลข '+r.fol[p].toLocaleString('th-TH')+' (น่าจะเป็นผู้ติดตาม)</span>'}
+   return '<div class="row" style="margin:4px 0"><span class="bd" style="min-width:76px;text-align:center">'+SN[p]+'</span><input style="flex:1;min-width:150px;width:auto" value="'+h(val)+'" placeholder="วางลิงก์หรือไอดี" onchange="impF('+i+',\''+p+'\',this.value)">'+st+'</div>'}).join('');
+  var sg=sugg(r),fo=Object.keys(r.fol).filter(function(p){return r.fol[p]}).map(function(p){return SN[p]+' '+r.fol[p].toLocaleString('th-TH')}).join(', ');
+  return '<div class="card"><div class="row"><input type="checkbox" style="width:auto"'+(r.sel?' checked':'')+(r.dup?' disabled':'')+' onchange="IMP['+i+'].sel=this.checked;impSum()" aria-label="เลือก"><input style="flex:1;min-width:120px;width:auto" value="'+h(r.name)+'" placeholder="ชื่อ Influencer (เพิ่มภายหลังได้)" onchange="IMP['+i+'].name=this.value;impSum()"><input type="number" style="width:110px" value="'+h(r.fl)+'" placeholder="Followers" onchange="IMP['+i+'].fl=this.value;impSum()">'+(r.dup?'<span class="bd r">'+h(r.dup)+'</span>':r.nd?'<span class="bd a">ชื่อซ้ำ</span>':'<span class="bd k">ใหม่</span>')+'<button class="bt s d" onclick="IMP.splice('+i+',1);impSum()">ลบ</button></div>'+(fo?'<div class="mu" style="margin:4px 0">ผู้ติดตาม: '+h(fo)+'</div>':'')+rows
+  +'<div style="margin-top:8px"><div class="mu">แคมเปญที่น่าจะเหมาะ (ติ๊กเพื่อเพิ่มเข้าแคมเปญตอนนำเข้า)</div>'+(sg.length?sg.map(function(x){return '<label class="row" style="margin:2px 0;color:var(--tx)"><input type="checkbox" style="width:auto"'+(r.camps[x.m.id]?' checked':'')+' onchange="IMP['+i+'].camps[\''+x.m.id+'\']=this.checked"><span>'+h(x.m.name)+'</span><span class="bd '+(x.m.part==1?'b':'a')+'">PART '+x.m.part+'</span><span class="mu">'+h(x.why)+'</span></label>'}).join(''):'<div class="mu">'+(S.camp.length?'ยังไม่มีแคมเปญที่ตรงเงื่อนไข Followers / Platform':'ยังไม่มีแคมเปญ สร้างที่หน้าแคมเปญก่อน')+'</div>')+'</div></div>'}).join('')
+ +'<div class="card"><div class="row">'+sel('ity','ประเภท Influencer (ใช้กับทุกคนที่นำเข้า)',[''].concat(TYPES),'')+'<span class="sp"></span><button class="bt" onclick="IMP.forEach(function(r){if(!r.dup)r.sel=true});impSum()">เลือกทั้งหมด</button><button class="bt p" onclick="doImport()">นำเข้าที่เลือก</button></div></div>'}
+function impSum(){$('#ir').innerHTML=impHtml()}
+function impF(i,p,val){val=val.trim();var r=IMP[i];r.gen[p]=false;if(SOC.indexOf(p)>=0&&val&&!/\/|\.(com|app)/i.test(val)){val=build(p,val);r.gen[p]=true}r.f[p]=val;impSum()}
+function doImport(){var rows=IMP.filter(function(r){return r.sel&&!r.dup});if(!rows.length){toast('ยังไม่ได้เลือกรายการ');return}var ty=v('ity'),made=0,linked=0;
+ rows.forEach(function(r){var fo=Object.keys(r.fol).filter(function(p){return r.fol[p]}).map(function(p){return SN[p]+' '+r.fol[p].toLocaleString('th-TH')}).join(', '),nt=[fo?'ผู้ติดตาม: '+fo:''].concat(r.extra).filter(Boolean).join('\n');
+  var o={id:uid(),name:r.name||guessName(r.f.tiktok||r.f.instagram||r.f.facebook||'')||r.f.line||r.f.email||'ไม่ระบุชื่อ',type:ty,followers:r.fl||'',tiktok:r.f.tiktok,instagram:r.f.instagram,facebook:r.f.facebook,lemon8:r.f.lemon8,line:r.f.line,email:r.f.email,note:nt};S.inf.push(o);made++;
+  Object.keys(r.camps).forEach(function(cid){var m=camp(cid);if(r.camps[cid]&&m){S.con.push({id:uid(),inf:o.id,camp:m.id,part:m.part,ch:'',st:'ยังไม่ได้ติดต่อ',last:'',next:today(),cnt:0,note:'',hist:[]});linked++}})});
+ save();IMP=[];toast('นำเข้า '+made+' คน'+(linked?' เพิ่มเข้าแคมเปญ '+linked+' รายการ':''));go(linked?'fu':'inf')}
+</script><script>
+/* ===== v3: แคมเปญ PART 2 + ข้อความเสนอพร้อมส่ง ===== */
+function sugg(r){var fl=Number(r.fl)||0;return S.camp.filter(function(m){return m.part==2&&m.status!=='เสร็จสิ้น'&&m.status!=='ยกเลิก'}).map(function(m){var why='';if(m.minF)why=!fl?'ยังไม่ทราบ Followers':fl>=Number(m.minF)?'Followers ผ่านเกณฑ์':'Followers ต่ำกว่าเกณฑ์ ('+Number(m.minF).toLocaleString('th-TH')+')';return {m:m,why:why}})}
+var _ih=impHtml;
+impHtml=function(){var o=_ih();if(!o)return o;
+ o=o.replace(/(onchange="IMP\[(\d+)\]\.camps\['(\w+)'\]=this\.checked">[\s\S]*?<\/label>)/g,'$1<button class="bt s p" style="margin:2px 0 6px 24px" onclick="msgM($2,\'$3\')">ดูข้อความเสนอแคมเปญ</button>');
+ return o.split('แคมเปญที่น่าจะเหมาะ (ติ๊กเพื่อเพิ่มเข้าแคมเปญตอนนำเข้า)').join('แคมเปญ PART 2 ที่เสนอได้ (กดดูข้อความเสนอ หรือติ๊กเพื่อเพิ่มเข้าแคมเปญตอนนำเข้า)').split('ยังไม่มีแคมเปญที่ตรงเงื่อนไข Followers / Platform').join('ยังไม่มีแคมเปญ PART 2 ที่กำลังดำเนินการ ไปสร้างที่หน้าแคมเปญก่อน')};
+function offerText(r,m,p,sender){var hd=guessName(r.f[p]||''),who=r.name||hd||'',acc=hd?'@'+hd:'';
+ var L=['สวัสดีค่ะ '+(who?'คุณ'+who+' ':'')+'🤍',(sender?'เรามาจาก '+sender+' ':'เรา')+'สนใจชวน'+(p?'บัญชี '+SN[p]+' '+acc+' ':'คุณ ')+'เข้าร่วมแคมเปญ “'+m.name+'”'+(m.brand?' ของแบรนด์ '+m.brand:'')+' ค่ะ',''];
+ if(m.plat)L.push('Platform: '+m.plat);if(m.start)L.push('ระยะเวลา: '+fd(m.start)+(m.end?' – '+fd(m.end):''));if(m.cond)L.push('คุณสมบัติ: '+m.cond);
+ if(m.brief)L.push('','Brief:',m.brief);if(m.sow)L.push('','Scope of Work:',m.sow);
+ L.push('','หากสนใจ รบกวนตอบกลับและแจ้งเรทราคาได้เลยนะคะ ขอบคุณค่ะ 🙏');return L.join('\n')}
+function msgM(i,cid){var r=IMP[i],m=camp(cid),ps=SOC.filter(function(p){return r.f[p]});window.MM={r:r,m:m};
+ modal('ข้อความเสนอ · '+h(m.name),'<div class="two">'+(ps.length?sel('mp','เสนอให้บัญชี',ps.map(function(p){return [p,SN[p]+' '+(guessName(r.f[p])?'@'+guessName(r.f[p]):'')]}),ps[0]):'<label>บัญชี<input id="mp" value="" disabled placeholder="ยังไม่มีลิงก์ Social"></label>')+fld('ms','ชื่อบริษัท / ทีมคุณ',S.sender||'')+'</div><label>ข้อความ (แก้ไขได้)<textarea id="mt" style="min-height:260px"></textarea></label><button class="bt s" onclick="IMP['+i+'].camps[\''+cid+'\']=true;closeM();impSum();toast(\'ติ๊กเพิ่มเข้าแคมเปญแล้ว\')">เพิ่มคนนี้เข้าแคมเปญตอนนำเข้า</button>',function(){var e=$('#mt');e.select();var ok=false;try{ok=document.execCommand('copy')}catch(x){}try{if(navigator.clipboard)navigator.clipboard.writeText(e.value).then(function(){},function(){});ok=true}catch(x){}toast(ok?'คัดลอกแล้ว':'เลือกข้อความแล้ว กดคัดลอกเอง')},'คัดลอกข้อความ');
+ var fill=function(){S.sender=v('ms');save();$('#mt').value=offerText(r,m,v('mp'),v('ms'))};$('#mp').onchange=fill;$('#ms').onchange=fill;fill()}
+</script><script>
+/* ===== v4: เทมเพลตข้อความ 3 ขั้นตอนต่อ Part ===== */
+var DEFLINE='https://line.me/R/ti/p/@shouter';
+var DEFTPL={1:[
+['สวัสดีค่ะ ติดต่อจากทีม {ทีม} นะคะ 😊','ทางเรามีแคมเปญ {แคมเปญ} สนใจเชิญทางช่อง {แพลตฟอร์ม} {ไอดี} เข้าร่วมงานค่ะ','','Scope of Work','{Scope}','','**ขออนุญาตแจ้งเพิ่มเติมนะคะ ทาง {ทีม} จะมีการหัก % เพิ่มเติม สามารถตรวจสอบและดูราคาสุทธิที่ได้ก่อนกดเสนอราคานะคะ','','หากสะดวกรับงาน {ชื่อ} รบกวนเสนอราคากลับมาในลิงก์ให้ทีนะคะ','{ลิงก์}'].join('\n'),
+['{ชื่อ} ได้รับการเสนอราคาเรียบร้อยค่ะ {ชื่อ} รบกวนกดลิงก์นี้เพื่อ Register เพื่อเปิดการแจ้งเตือนการคอนเฟิร์มงาน {แคมเปญ} เชื่อมกับ {แพลตฟอร์ม}: {ไอดี} ได้เลยค่ะ','{ลิงก์ LINE}'].join('\n'),
+'ขอบคุณมากค่ะ หากมีการคอนเฟิร์มงาน จะมีแจ้งเตือนไปนะคะ'],
+2:[
+['สวัสดีค่ะ ติดต่อจากทีม {ทีม} นะคะ 😊','ทางเรามีแคมเปญสำหรับแบรนด์ {แบรนด์} และสนใจร่วมงานกับทางช่อง {แพลตฟอร์ม} {ไอดี} ค่ะ','','Scope of Work','{Scope}','*รายได้สุทธิ {รายได้} บาท','','การกดเข้าร่วมงานกับ {ทีม} และเสนอราคาต้องมีการ Register ก่อนเข้าร่วมงาน เนื่องจาก {ทีม} แจ้งเตือนในระบบแพลตฟอร์มเป็นหลัก','','ไม่ทราบว่าทางช่องสะดวกไหมคะ','{ลิงก์ LINE}'].join('\n'),
+['หากสนใจร่วมงานกับ {แบรนด์} {ชื่อ} รบกวนกดลิงก์นี้ เชื่อมกับ {แพลตฟอร์ม}: {ไอดี} เพื่อเข้าร่วมกับ {แบรนด์} นะคะ','{ลิงก์ LINE}'].join('\n'),
+'ขอบคุณมากค่ะ หากทางทีมอนุมัติบัญชีแล้ว {ชื่อ} รบกวนเซิร์ชคำว่า “{คำค้นหา}” ในกระดานได้นะคะ']};
+var STEPN={1:['1 ชวนเสนอราคา','2 ลิงก์ Register หลังเสนอราคา','3 ขอบคุณหลัง Register'],2:['1 เสนองาน','2 ลิงก์สมัคร หลังสนใจ','3 หลังสมัครแล้ว']};
+function tplText(p,k){return (S.tpl&&S.tpl[p]&&S.tpl[p][k])||DEFTPL[p][k]}
+function stepFor(c){var s=c.st;if(c.part==1)return s==='ยืนยันราคาแล้ว'?3:(s==='ได้รับราคาแล้ว'||s==='กำลังเจรจา')?2:1;return s==='ยืนยันรับงาน'?3:(s==='สนใจรับงาน'||s==='กำลังพิจารณา')?2:1}
+function fillT(t,c){return t.split('\n').map(function(L){var drop=false;L=L.replace(/\{([^}]+)\}/g,function(a,k){var x=c[k];if(x===undefined||x===''){if(k==='รายได้'){drop=true;return ''}return '['+k+']'}return x});return drop?null:L}).filter(function(L){return L!==null}).join('\n')}
+function tplCtx(src,m,p){var f=src.f||src,hd=p?guessName(f[p]||''):'';return {'ชื่อ':src.name||hd||'','แพลตฟอร์ม':p?SN[p]:'','ไอดี':hd||src.name||'','แคมเปญ':m.name,'แบรนด์':m.brand||'','Scope':(m.sow||'').trim(),'Brief':(m.brief||'').trim(),'เงื่อนไข':m.cond||'','รายได้':m.net||'','ลิงก์':m.link||'','ลิงก์ LINE':S.lineLink||DEFLINE,'คำค้นหา':m.kw||'','ทีม':S.sender||'Shout'}}
+function tplOpen(src,m,c,ii){var f=src.f||src,ps=SOC.filter(function(p){return f[p]}),st=c?stepFor(c):1;window.TM={c:c};
+ modal('ข้อความ · '+h(m.name),'<div class="two">'+sel('ts','ขั้นตอน',STEPN[m.part].map(function(x,k){return [k,x]}),st-1)+(ps.length?sel('tp','เสนอให้บัญชี',ps.map(function(p){var g=guessName(f[p]);return [p,SN[p]+(g?' @'+g:'')]}),ps.indexOf('tiktok')>=0?'tiktok':ps[0]):'<label>บัญชี<input id="tp" value="" disabled placeholder="ยังไม่มีลิงก์ Social"></label>')+'</div><label>ข้อความ (แก้ไขได้ก่อนคัดลอก)<textarea id="mt" style="min-height:280px"></textarea></label><div class="row">'+(c?'<button class="bt s" onclick="markSent()">บันทึกว่าส่งแล้ว</button>':'')+(ii!=null?'<button class="bt s" onclick="IMP['+ii+'].camps[\''+m.id+'\']=true;closeM();impSum();toast(\'ติ๊กเพิ่มเข้าแคมเปญแล้ว\')">เพิ่มคนนี้เข้าแคมเปญตอนนำเข้า</button>':'')+'</div>',function(){var e=$('#mt');e.select();var ok=false;try{ok=document.execCommand('copy')}catch(x){}try{if(navigator.clipboard)navigator.clipboard.writeText(e.value).then(function(){},function(){});ok=true}catch(x){}toast(ok?'คัดลอกแล้ว':'เลือกข้อความแล้ว กดคัดลอกเอง')},'คัดลอกข้อความ');
+ var fill=function(){$('#mt').value=fillT(tplText(m.part,+v('ts')),tplCtx(src,m,v('tp')))};$('#ts').onchange=fill;if($('#tp').tagName==='SELECT')$('#tp').onchange=fill;fill()}
+function tplC(id){var c=con(id);tplOpen(inf(c.inf),camp(c.camp),c)}
+function markSent(){var c=TM.c,s=+v('ts')+1;if(c.st==='ยังไม่ได้ติดต่อ'&&s===1)c.st=c.part==1?'ติดต่อแล้ว':'ส่งงานเสนอแล้ว';if(v('tp'))c.ch=SN[v('tp')];c.hist.push({d:today(),ch:c.ch,st:c.st,note:'ส่งข้อความขั้นที่ '+s});c.last=today();if(!isClosed(c))c.next=addDays(3);save();closeM();render();toast('บันทึกการส่งแล้ว ติดตามอีก 3 วัน')}
+function msgM(i,cid){var r=IMP[i];tplOpen({name:r.name,f:r.f},camp(cid),null,i)}
+function tplEditM(){var b='';[1,2].forEach(function(p){for(var k=0;k<3;k++)b+=area('te_'+p+'_'+k,'PART '+p+' · '+STEPN[p][k],tplText(p,k))});
+ modal('แก้ไขเทมเพลตข้อความ',fld('te_s','ชื่อทีมของคุณ ({ทีม})',S.sender||'Shout')+fld('te_l','ลิงก์ LINE ({ลิงก์ LINE})',S.lineLink||DEFLINE)+'<div class="mu" style="margin-bottom:8px">ตัวแปรที่ใช้ได้: {ชื่อ} {แพลตฟอร์ม} {ไอดี} {แคมเปญ} {แบรนด์} {Scope} {Brief} {เงื่อนไข} {รายได้} {ลิงก์} {ลิงก์ LINE} {คำค้นหา} {ทีม} · ระบบแทนค่าให้ตามคนและแคมเปญที่เลือก ถ้าค่าไหนว่างจะขึ้นเป็น [ชื่อตัวแปร] ให้เห็นชัด</div>'+b+'<button class="bt s d" onclick="delete S.tpl;save();closeM();toast(\'คืนค่าเริ่มต้นแล้ว\')">คืนค่าเริ่มต้น</button>',function(){S.sender=v('te_s');S.lineLink=v('te_l');S.tpl={1:[],2:[]};[1,2].forEach(function(p){for(var k=0;k<3;k++)S.tpl[p][k]=document.getElementById('te_'+p+'_'+k).value});save();closeM();toast('บันทึกเทมเพลตแล้ว')})}
+var _fr=fuRow;fuRow=function(c){var o=_fr(c);return o.replace('<button class="bt s" onclick="histM(\''+c.id+'\')">','<button class="bt s p" onclick="tplC(\''+c.id+'\')">ข้อความ</button><button class="bt s" onclick="histM(\''+c.id+'\')">')};
+var _vc=vCamp;vCamp=function(){return _vc().replace('<button class="bt s" onclick="backup()">','<button class="bt s" onclick="tplEditM()">เทมเพลตข้อความ</button><button class="bt s" onclick="backup()">')};
+var _cm=campM;campM=function(id){_cm(id);var m=id?camp(id):{},ma=document.querySelector('.md .ma');if(!ma)return;
+ ma.insertAdjacentHTML('beforebegin',fld('c_lk','ลิงก์เสนอราคา / สมัครของแคมเปญ ({ลิงก์})',m.link)+'<div class="two">'+fld('c_nt','รายได้สุทธิ บาท ({รายได้})',m.net)+fld('c_kw','คำค้นหาในกระดาน ({คำค้นหา})',m.kw)+'</div>');
+ var ok=$('#mok'),old=ok.onclick;ok.onclick=function(){var x={link:v('c_lk'),net:v('c_nt'),kw:v('c_kw')};old.call(this);if(!$('#m').innerHTML){var t=id?camp(id):S.camp[S.camp.length-1];if(t){Object.assign(t,x);save();render()}}}};
+</script><script>
+/* ===== v5: ลิงก์เสนอราคา PART 1 แยกรายคน ===== */
+var _tc=tplCtx;tplCtx=function(src,m,p){var o=_tc(src,m,p);if(window.TM&&TM.c)o['ลิงก์']=TM.c.link||m.link||'';return o};
+var _to=tplOpen;tplOpen=function(src,m,c,ii){_to(src,m,c,ii);if(!c||m.part!=1)return;var lb=$('#mt').closest('label');if(!lb)return;
+ lb.insertAdjacentHTML('beforebegin',fld('tl','ลิงก์เสนอราคาของคนนี้ (วางลิงก์จาก Shout แล้วข้อความจะอัปเดตเอง)',c.link||''));
+ $('#tl').addEventListener('input',function(){c.link=this.value.trim();save();$('#ts').onchange()})};
+var _fr2=fuRow;fuRow=function(c){var o=_fr2(c);if(c.part!=1)return o;var chip=c.link?'<a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(c.link))+'">ลิงก์เสนอราคา</a>':'<span class="bd r">ยังไม่มีลิงก์เสนอราคา</span>';return o.replace('<span class="sp"></span><button class="bt s p" onclick="logM(',chip+'<span class="sp"></span><button class="bt s p" onclick="logM(')};
+</script><script>
+/* ===== v6: เพิ่มอินฟลู + ลิงก์เสนอราคา + แคมเปญ ในครั้งเดียว ===== */
+function newCon(inf,m,link){return {id:uid(),inf:inf,camp:m.id,part:m.part,ch:'',st:'ยังไม่ได้ติดต่อ',last:'',next:today(),cnt:0,note:'',hist:[],link:m.part==1?(link||''):''}}
+var _sv=save;save=function(){_sv();var P=window.PEND;if(P&&S.inf.length>P.n){var i=S.inf[S.inf.length-1];if(i.name===P.name){window.PEND=null;var m=camp(P.cid);if(m){S.con.push(newCon(i.id,m,P.link));_sv()}}}};
+var _im=infM;infM=function(id){_im(id);if(id)return;var ma=document.querySelector('.md .ma');if(!ma)return;
+ var cs=S.camp.filter(function(m){return m.status!=='เสร็จสิ้น'&&m.status!=='ยกเลิก'});
+ ma.insertAdjacentHTML('beforebegin',sel('f_cp','เพิ่มเข้าแคมเปญเลย (ไม่บังคับ)',[['','ไม่เพิ่ม']].concat(cs.map(function(m){return [m.id,m.name+' (PART '+m.part+')']})),'')+fld('f_lk','ลิงก์เสนอราคาของคนนี้ (ใช้กับแคมเปญ PART 1)',''));
+ var ok=$('#mok'),old=ok.onclick;ok.onclick=function(){window.PEND=v('f_cp')?{cid:v('f_cp'),link:v('f_lk'),n:S.inf.length,name:v('f_n')}:null;old.call(this)}};
+/* เพิ่ม Influencer ที่มีอยู่เข้าแคมเปญ: ใส่ลิงก์ได้ทีละคน */
+var _al=addList;addList=function(){_al();AM.lk=AM.lk||{};if(camp(AM.id).part!=1)return;Array.prototype.forEach.call(document.querySelectorAll('#al label'),function(lb){var mm=lb.innerHTML.match(/AM\.sel\['(\w+)'\]/);if(!mm)return;var id=mm[1],inp=document.createElement('input');inp.placeholder='ลิงก์เสนอราคาของคนนี้';inp.value=AM.lk[id]||'';inp.style.cssText='flex-basis:100%;width:100%';inp.addEventListener('input',function(){AM.lk[id]=this.value.trim()});lb.appendChild(inp)})};
+var _am=addM;addM=function(id){_am(id);var ok=$('#mok'),old=ok.onclick;ok.onclick=function(){var n=S.con.length;old.call(this);S.con.slice(n).forEach(function(c){if(window.AM&&AM.lk&&AM.lk[c.inf]&&c.part==1)c.link=AM.lk[c.inf]});save();render()}};
+/* หน้านำเข้าลิงก์: รองรับแคมเปญ PART 1 พร้อมลิงก์เสนอราคารายคน */
+function sugg(r){var fl=Number(r.fl)||0;return S.camp.filter(function(m){return m.status!=='เสร็จสิ้น'&&m.status!=='ยกเลิก'}).map(function(m){var why='';if(m.minF)why=!fl?'ยังไม่ทราบ Followers':fl>=Number(m.minF)?'Followers ผ่านเกณฑ์':'Followers ต่ำกว่าเกณฑ์ ('+Number(m.minF).toLocaleString('th-TH')+')';return {m:m,why:why}})}
+var _tc2=tplCtx;tplCtx=function(src,m,p){var o=_tc2(src,m,p);if(src.qlink&&m.part==1)o['ลิงก์']=src.qlink;return o};
+function msgM(i,cid){var r=IMP[i];tplOpen({name:r.name,f:r.f,qlink:r.qlink},camp(cid),null,i)}
+var _ih2=impHtml;impHtml=function(){var o=_ih2(),k=-1;if(!o)return o;
+ o=o.replace(/<div style="margin-top:8px"><div class="mu">แคมเปญ PART 2 ที่เสนอได้/g,function(a){k++;return '<div class="row" style="margin:6px 0"><span class="bd" style="min-width:76px;text-align:center">ลิงก์เสนอราคา</span><input style="flex:1;min-width:150px;width:auto" value="'+h(IMP[k]&&IMP[k].qlink||'')+'" placeholder="ใช้กับแคมเปญ PART 1 วางลิงก์ที่ได้จาก Shout" onchange="IMP['+k+'].qlink=this.value.trim()"></div><div style="margin-top:8px"><div class="mu">แคมเปญที่เสนอได้ (PART 1 และ 2)'});
+ return o.split('ยังไม่มีแคมเปญ PART 2 ที่กำลังดำเนินการ').join('ยังไม่มีแคมเปญที่กำลังดำเนินการ')};
+function doImport(){var rows=IMP.filter(function(r){return r.sel&&!r.dup});if(!rows.length){toast('ยังไม่ได้เลือกรายการ');return}var ty=v('ity'),made=0,linked=0;
+ rows.forEach(function(r){var fo=Object.keys(r.fol).filter(function(p){return r.fol[p]}).map(function(p){return SN[p]+' '+r.fol[p].toLocaleString('th-TH')}).join(', '),nt=[fo?'ผู้ติดตาม: '+fo:''].concat(r.extra).filter(Boolean).join('\n');
+  var o={id:uid(),name:r.name||guessName(r.f.tiktok||r.f.instagram||r.f.facebook||'')||r.f.line||r.f.email||'ไม่ระบุชื่อ',type:ty,followers:r.fl||'',tiktok:r.f.tiktok,instagram:r.f.instagram,facebook:r.f.facebook,lemon8:r.f.lemon8,line:r.f.line,email:r.f.email,note:nt};S.inf.push(o);made++;
+  Object.keys(r.camps).forEach(function(cid){var m=camp(cid);if(r.camps[cid]&&m){S.con.push(newCon(o.id,m,r.qlink));linked++}})});
+ _sv();IMP=[];toast('นำเข้า '+made+' คน'+(linked?' เพิ่มเข้าแคมเปญ '+linked+' รายการ':''));go(linked?'fu':'inf')}
+</script><script>
+/* ===== v7: อ่านเธรดคอมเมนต์ยาวๆ จาก Facebook ทั้งก้อน ===== */
+var JUNK=/^(?:ไม่มีคำอธิบายรูปภาพ|อาจเป็นรูป.*|(?:LINE|TIKTOK|LEMON8-APP|INSTAGRAM|FACEBOOK|YOUTUBE)\.COM|LINE\.ME|Add LINE friend|[·•]+)$|(?:บน|on)\s+(?:TikTok|Lemon8|Instagram|Facebook|LINE)\s*$/i;
+var LB=[['tiktok',/(?:^|[^A-Za-z])(?:tik\s*tok|ติ[๊้]?ก\s*ต[็๊]?อก|ทิก\s*ตอก)(?![A-Za-z])/i],['instagram',/(?:^|[^A-Za-z])(?:instagram|insta|ig|อินสตาแกรม|อินสตา|ไอจี)(?![A-Za-z])/i],['facebook',/(?:^|[^A-Za-z])(?:facebook|fb|เฟซบุ๊ก|เฟสบุ๊ก|เฟสบุ๋ก|เฟส|เฟซ)(?![A-Za-z])/i],['lemon8',/(?:^|[^A-Za-z])(?:lemon\s*8|lemon|lamon\s*8|lamon|l8|เลม่อน)(?![A-Za-z])/i],['line',/(?:^|[^A-Za-z])(?:line\s*(?:id|official|oa)|line|ไลน์|ใลน์|ไลน)(?![A-Za-z])/i]];
+var STOP=['followers','follower','id','official','oa','line','ig','fb','tiktok','instagram','insta','facebook','lemon8','l8','free','size','page','inbox','dm','k'],NUMTOK=/^[\d.,]+\s*[kKmM]?\+*$/;
+var _nm=norm;norm=function(u){if(/facebook\.com\/search/i.test(u)){try{return 'fbname:'+new URL(href(u)).searchParams.get('q').toLowerCase()}catch(e){}}return _nm(u)};
+function pn(s){s=String(s).toLowerCase().replace(/[\s+,]/g,'').replace(/\.+$/,'');var m=s.match(/^([\d.]+)(k|m|พัน|หมื่น|แสน|ล้าน)?$/);if(!m)return 0;var u={k:1e3,m:1e6,'พัน':1e3,'หมื่น':1e4,'แสน':1e5,'ล้าน':1e6}[m[2]]||1;return Math.round(parseFloat(m[1])*u)||0}
+function fmtN(n){return n>=1e6?(n/1e6).toFixed(1).replace('.0','')+'M':n>=1000?(n/1000).toFixed(1).replace('.0','')+'k':String(n)}
+function folOf(s){var m,n;
+ if((m=s.match(/(?:ผู้ติดตาม|ติดตาม|followers?|ยอดฟอล|ฟอล(?:โลเวอร์)?)[^\d\n]{0,14}(\d[\d.,]*\s*[kKmM]?)/i))&&(n=pn(m[1])))return n;
+ if((m=s.match(/(\d[\d.,]*\s*[kKmM]?)\s*\+*\s*(?:ผู้ติดตาม|followers?|ฟอล)/i))&&(n=pn(m[1])))return n;
+ if((m=s.match(/(\d[\d.,]*)\s*([kKmM])(?![A-Za-z])/))&&(n=pn(m[1]+m[2])))return n;
+ if((m=s.match(/\(\s*(\d[\d.,]*)\s*\+*\s*\)/))&&(n=pn(m[1])))return n;
+ if((m=s.match(/(?:^|[^\w.])(\d{1,3}(?:,\d{3})+|\d{3,7})(?![\w])/))&&(n=pn(m[1])))return n;return 0}
+function pickHandle(rest,p){var re=/@?[A-Za-z0-9._\-]{2,}/g,m,first='';while((m=re.exec(rest))){var b=m[0].replace(/^@/,'').replace(/[.\-]+$/,'');if(!b)continue;if(p!=='line'&&NUMTOK.test(b))continue;if(p==='line'&&/^[\d.,]+[kKmM]$/.test(b))continue;if(STOP.indexOf(b.toLowerCase())>=0)continue;if(m[0].charAt(0)==='@')return b;if(!first){var pre=rest.slice(0,m.index).replace(/[\d.,]+\s*[kKmM]?\+*/g,'');if(/^[^A-Za-z0-9\u0E00-\u0E7F]*$/.test(pre))first=b}}return first}
+function fbName(rest){var s=rest.replace(/\([^)]*\)/g,' ').replace(/(?:ผู้ติดตาม|ติดตาม|followers?|ยอดฟอล)\S*/gi,' ').split(/\s+/).filter(function(t){return t&&!NUMTOK.test(t)}).join(' ');return s.replace(/^[^\p{L}\p{N}@]+/u,'').replace(/[^\p{L}\p{M}\p{N}]+$/u,'').trim()}
+function cleanLink(u){try{var o=new URL(href(u));if(platOf(u)==='facebook'&&/profile\.php/i.test(o.pathname)){var id=o.searchParams.get('id');return o.origin+o.pathname+(id?'?id='+id:'')}return o.origin+o.pathname.replace(/\/+$/,'')}catch(e){return u}}
+function parseComment(txt,who){var f={tiktok:'',instagram:'',facebook:'',lemon8:'',line:'',email:''},gen={},fol={},extra=[],name='',cur='';
+ var urls=(txt.match(URLRE)||[]).map(cleanU);txt=txt.replace(URLRE,' ');
+ var em=txt.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/);if(em){f.email=em[0];txt=txt.replace(em[0],' ')}
+ urls.forEach(function(u){var p=platOf(u),c=cleanLink(u),clip=false;if(p==='tiktok'){try{var o=new URL(href(u));clip=/^(vt|vm)\./i.test(o.hostname)||/\/video\//.test(o.pathname)}catch(e){}}
+  if(p==='other'||!(p in f)){extra.push(c);return}
+  if(!f[p]){f[p]=c;if(clip)gen[p]='clip'}else if(gen[p]==='clip'&&!clip){extra.push(f[p]);f[p]=c;delete gen[p]}else extra.push(c)});
+ txt.split('\n').forEach(function(L){L=L.trim();if(!L)return;
+  var nm=L.match(/ชื่?อ(?:เล่น)?\s*[:：=;]?\s*([^\s:：;,()\[\]]+)/);if(nm&&!name){var t=nm[1].replace(/[^\p{L}\p{M}\p{N}._\-]/gu,'').replace(/(?:นะคะ|นะครับ|นะค่ะ|ค่ะ|ค่า+|คะ|ครับ|จ้า|ฮะ|นะ)+$/,'');if(t&&t!=='อายุ'&&t.length<30)name=t}
+  if(!name){var n2=L.match(/^[^\p{L}]*([\u0E00-\u0E7F]{2,12})\s+อายุ/u);if(n2)name=n2[1]}
+  if((/(?:^|[^A-Za-z])x\s*[:：]|twitter|twitte|youtube|shopee/i.test(L))&&!/tik\s*tok|instagram|facebook|lemon|line/i.test(L)){cur='x';return}
+  var hit=null;for(var k=0;k<LB.length&&!hit;k++){var mm=L.match(LB[k][1]);if(mm)hit={p:LB[k][0],rest:L.slice(mm.index+mm[0].length)}}
+  if(hit){var p=hit.p,rest=hit.rest;cur=p;
+   if(p==='facebook'){var nf=fbName(rest),nn=folOf(rest);if(nf){var one=nf.split(/\s+/).length===1;if(!f.facebook){if(one&&/^@?[A-Za-z0-9._]+$/.test(nf)&&/[\d._]/.test(nf)){f.facebook=build('facebook',nf);gen.facebook=true}else{f.facebook='https://www.facebook.com/search/people/?q='+encodeURIComponent(nf);gen.facebook='name'}}else if(gen.facebook&&f.facebook.indexOf(encodeURIComponent(nf))<0)extra.push('Facebook อีกชื่อ: '+nf)}if(nn&&!fol.facebook)fol.facebook=nn;return}
+   var hd=pickHandle(rest,p),n3=hd?folOf(rest.replace(hd,' ')):folOf(rest);
+   if(p==='line'){if(hd){if(!f.line)f.line=(rest.indexOf('@'+hd)>=0?'@':'')+hd;else if(/^https?:/i.test(f.line)&&f.line.indexOf(hd)<0)extra.push('LINE ID: '+hd)}return}
+   var sec=false,link=hd?build(p,hd):'';
+   if(hd){if(!f[p]){f[p]=link;gen[p]=true}else{var g0=guessName(f[p]);if(!g0)extra.push('ไอดี '+SN[p]+': '+hd);else if(g0.toLowerCase()!==hd.toLowerCase()){extra.push(SN[p]+' อีกช่อง: '+link+(n3?' ('+fmtN(n3)+')':''));sec=true}}}
+   if(n3&&!sec&&!fol[p])fol[p]=n3;return}
+  var bare=L.match(/^@?([A-Za-z0-9._]{2,})$/);if(bare&&cur&&cur!=='x'&&cur!=='line'&&cur!=='facebook'&&!f[cur]&&!NUMTOK.test(bare[1])){f[cur]=build(cur,bare[1]);gen[cur]=true;return}
+  if(cur&&cur!=='x'&&cur!=='line'&&/(?:ผู้ติดตาม|followers?|ยอดฟอล)/i.test(L)){var n4=folOf(L);if(n4&&!fol[cur])fol[cur]=n4}});
+ var any=Object.keys(f).some(function(k){return f[k]})||Object.keys(fol).length;if(!any)return null;
+ who=String(who||'').replace(/[^\p{L}\p{M}\p{N}\s._\-]/gu,'').trim();
+ if(!name)name=who||guessName(f.tiktok||f.instagram||f.facebook||'')||'';
+ var fl=Math.max.apply(null,Object.keys(fol).map(function(k){return fol[k]}).concat([0]));
+ return {sel:true,name:name,f:f,gen:gen,fol:fol,extra:extra,camps:{},fl:fl||'',qlink:'',who:who}}
+function parseThread(t){var blocks=[],buf=[];t.split('\n').forEach(function(L){L=L.trim();if(L==='ตอบกลับ'){blocks.push(buf);buf=[];return}if(L==='แชร์'||!L)return;buf.push(L)});if(buf.length)blocks.push(buf);
+ var out=[];blocks.forEach(function(b){var who='';if(b.length>1&&/^[·•]+$/.test(b[1])){who=b[0];b=b.slice(1)}b=b.filter(function(L){return !JUNK.test(L)});if(!b.length)return;var r=parseComment(b.join('\n'),who);if(r)out.push(r)});return out}
+function parseText(t){t=t.replace(/[\u{1D400}-\u{1D7FF}]/gu,function(c){return c.normalize('NFKC')}).replace(/[\u200B-\u200D\uFEFF]/g,'').replace(/\u00A0/g,' ');
+ if(/(?:^|\n)\s*ตอบกลับ\s*(?:\n|$)/.test(t))return parseThread(t);
+ var out=[];t.split(/\n\s*\n\s*\n|\n\s*(?:-{3,}|={3,}|_{3,})\s*\n/).forEach(function(b){b=b.trim();if(!b)return;var us=(b.match(URLRE)||[]).map(cleanU),cnt={},multi=false;us.forEach(function(u){var p=platOf(u);cnt[p]=(cnt[p]||0)+1;if(cnt[p]>1)multi=true});var ems=b.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/g)||[];
+  if(multi||ems.length>1){us.concat(ems).forEach(function(x){var r=parseComment(x,'');if(r)out.push(r)})}else{var r=parseComment(b,'');if(r)out.push(r)}});return out}
+function doParse(){IMP=parseText($('#it').value);toast(IMP.length?'พบ '+IMP.length+' คน':'ไม่พบข้อมูลในข้อความ');$('#ir').innerHTML=impHtml()}
+function vImp(){return '<div class="bar"><h1>นำเข้าลิงก์</h1></div><div class="card"><label>วางคอมเมนต์ได้ทั้งเธรดจาก Facebook ในครั้งเดียว ระบบแยกเป็นรายคน แล้วจัดช่องทาง TikTok / Instagram / Facebook / Lemon8 / LINE ให้เอง<textarea id="it" style="min-height:180px" placeholder="วางตรงนี้ (คัดลอกคอมเมนต์ทั้งหมดมาวางรวมกันได้เลย)"></textarea></label><button class="bt p" onclick="doParse()">แยกข้อมูลทุกคน</button></div><div id="ir">'+impHtml()+'</div>'}
+function impF(i,p,val){val=val.trim();var r=IMP[i];r.gen[p]=false;if(val&&SOC.indexOf(p)>=0&&!/\/|\.(com|app)/i.test(val)){if(p==='facebook'&&/\s/.test(val)){r.f[p]='https://www.facebook.com/search/people/?q='+encodeURIComponent(val);r.gen[p]='name'}else{r.f[p]=build(p,val);r.gen[p]=true}}else r.f[p]=val;impSum()}
+function chip(r,p){var v=r.f[p],n=r.fol[p],ft=n?' · '+fmtN(n):'';
+ if(!v)return '<span class="bd r">'+SN[p]+' ไม่พบ'+(n?' ('+fmtN(n)+'?)':'')+'</span>';
+ if(p==='email')return '<a class="lk" href="mailto:'+h(v)+'">Email</a>';
+ if(p==='line')return /^https?:|line\.me|lin\.ee/i.test(v)?'<a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(v))+'">LINE ↗</a>':'<span class="bd a">LINE ID: '+h(v)+'</span>';
+ var g=r.gen[p],hd=guessName(v),lab=SN[p]+(g==='name'?': '+(function(){try{return decodeURIComponent(v.split('q=')[1]||'')}catch(e){return ''}})():hd&&p!=='facebook'?' @'+hd:'')+ft+(g===true?' *':g==='name'?' (ชื่อ)':g==='clip'?' (คลิป)':'');
+ return '<a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(v))+'"'+(g?' style="border-color:var(--at)"':'')+'>'+h(lab)+' ↗</a>'}
+function pickCamp(i,cid){if(!cid)return;IMP[i].camps[cid]=true;impSum();msgM(i,cid)}
+function unpick(i,cid){delete IMP[i].camps[cid];impSum()}
+function impHtml(){if(!IMP.length)return '';impMark();var act=S.camp.filter(function(m){return m.status!=='เสร็จสิ้น'&&m.status!=='ยกเลิก'}),ok=IMP.filter(function(r){return r.sel}).length,dp=IMP.filter(function(r){return r.dup}).length;
+ var head='<div class="row" style="margin:8px 0"><span class="mu">พบ '+IMP.length+' คน · เลือก '+ok+' · มีในระบบแล้ว '+dp+'</span><span class="sp"></span><button class="bt s" onclick="IMP.forEach(function(r){if(!r.dup)r.sel=true});impSum()">เลือกทั้งหมด</button><button class="bt s p" onclick="doImport()">นำเข้าที่เลือก</button></div><div class="mu" style="margin-bottom:8px">* = สร้างลิงก์จากไอดี (ยังไม่ได้ตรวจ) · (ชื่อ) = ลิงก์ค้นหาจากชื่อ Facebook · (คลิป) = ลิงก์คลิปตัวอย่าง กดชิปเพื่อเปิดเช็กก่อนนำเข้า</div>';
+ return head+IMP.map(function(r,i){var fl=Number(r.fl)||0,chips=['tiktok','instagram','facebook','lemon8','line','email'].map(function(p){return chip(r,p)}).join(' '),
+  rows=['tiktok','instagram','facebook','lemon8','line','email'].map(function(p){return '<div class="row" style="margin:4px 0"><span class="bd" style="min-width:76px;text-align:center">'+SN[p]+'</span><input style="flex:1;min-width:150px;width:auto" value="'+h(r.f[p])+'" placeholder="วางลิงก์หรือไอดี" onchange="impF('+i+',\''+p+'\',this.value)"></div>'}).join(''),
+  ex=r.extra.map(function(x){return '<div class="mu">'+h(x).replace(/(https?:\/\/[^\s]+)/g,'<a class="lk" target="_blank" rel="noopener noreferrer" href="$1">เปิดลิงก์</a>')+'</div>'}).join(''),
+  picks=Object.keys(r.camps).filter(function(k){return r.camps[k]&&camp(k)}),hasP1=picks.some(function(k){return camp(k).part==1});
+  return '<div class="card"><div class="row"><input type="checkbox" style="width:auto"'+(r.sel?' checked':'')+(r.dup?' disabled':'')+' onchange="IMP['+i+'].sel=this.checked;impSum()" aria-label="เลือก"><input style="flex:1;min-width:120px;width:auto" value="'+h(r.name)+'" placeholder="ชื่อ Influencer" onchange="IMP['+i+'].name=this.value;impSum()"><input type="number" style="width:100px" value="'+h(r.fl)+'" placeholder="Followers" onchange="IMP['+i+'].fl=this.value;impSum()">'+(r.dup?'<span class="bd r">'+h(r.dup)+'</span>':r.nd?'<span class="bd a">ชื่อซ้ำ</span>':'<span class="bd k">ใหม่</span>')+'<button class="bt s d" onclick="IMP.splice('+i+',1);impSum()">ลบ</button></div>'
+  +(r.who&&r.who!==r.name?'<div class="mu">ผู้คอมเมนต์: '+h(r.who)+'</div>':'')+'<div class="row" style="margin-top:6px">'+chips+'</div>'
+  +'<details style="margin-top:6px"><summary class="mu" style="cursor:pointer">แก้ไขช่องทาง'+(r.extra.length?' / ลิงก์อื่น ('+r.extra.length+')':'')+'</summary>'+rows+ex+'</details>'
+  +'<div class="row" style="margin-top:8px"><select class="q" aria-label="เสนอแคมเปญ" onchange="pickCamp('+i+',this.value)"><option value="">+ เสนอแคมเปญ…</option>'+act.map(function(m){var fit=m.minF?(!fl?' (ไม่ทราบ Followers)':fl>=Number(m.minF)?' ✓':' ✗ ต่ำกว่าเกณฑ์'):'';return '<option value="'+m.id+'">PART '+m.part+' · '+h(m.name)+fit+'</option>'}).join('')+'</select>'
+  +picks.map(function(k){var m=camp(k);return '<span class="bd '+(m.part==1?'b':'a')+'">PART '+m.part+' · '+h(m.name)+'</span><button class="bt s p" onclick="msgM('+i+',\''+k+'\')">ข้อความ</button><button class="bt s" onclick="unpick('+i+',\''+k+'\')" aria-label="เอาออก">✕</button>'}).join('')+'</div>'
+  +(hasP1?'<div class="row" style="margin-top:6px"><span class="bd" style="min-width:76px;text-align:center">ลิงก์เสนอราคา</span><input style="flex:1;min-width:150px;width:auto" value="'+h(r.qlink||'')+'" placeholder="PART 1: วางลิงก์ที่ได้จาก Shout" onchange="IMP['+i+'].qlink=this.value.trim()"></div>':'')+'</div>'}).join('')
+ +'<div class="card"><div class="row">'+sel('ity','ประเภท Influencer (ใช้กับทุกคนที่นำเข้า)',[''].concat(TYPES),'')+'<span class="sp"></span><button class="bt p" onclick="doImport()">นำเข้าที่เลือก</button></div></div>'}
+</script></body></html>
