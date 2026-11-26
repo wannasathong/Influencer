@@ -421,4 +421,15 @@ var _ih9=impHtml;impHtml=function(){if(!IMP.length&&!IMPIN.length&&!IMPSTAT.tota
  var body=IMP.length?_ih9().replace(/คนที่ (\d+)/g,function(a,n){var r=IMP[n-1];return a+(r&&r.grp==='need'?' · <span class="bd a">ยังไม่อยู่ใน Shout · ต้องทัก</span>':r&&r.grp==='notk'?' · <span class="bd">เช็ก Verify ไม่ได้ (ไม่มีลิงก์ TikTok โปรไฟล์)</span>':'')}):'';
  var inn=IMPIN.length?'<details class="card"><summary class="nm" style="cursor:pointer">อยู่ใน Shout แล้ว '+IMPIN.length+' คน (ไม่ต้องทัก ไม่นำเข้า)</summary>'+IMPIN.map(function(r,j){return '<div class="row" style="margin:6px 0"><span class="sp">'+h(r.name||guessName(r.f.tiktok))+' <a class="lk" target="_blank" rel="noopener noreferrer" href="'+h(href(r.f.tiktok))+'">TikTok</a></span><button class="bt s" onclick="moveBack('+j+')">ย้ายกลับ</button></div>'}).join('')+'</details>':'';
  return sum+body+inn};
+</script><script>
+/* ===== v10: สถานะ Verify แล้ว (PART 2 ลบใน 7 วัน) + หน้านำเข้าแสดงแคมเปญ PART 2 เท่านั้น ===== */
+if(P2.indexOf('Verify แล้ว')<0)P2.splice(P2.indexOf('ปฏิเสธงาน'),0,'Verify แล้ว');
+CLOSED.push('Verify แล้ว');INTR.push('Verify แล้ว');
+function sweep(){var t=today(),ch=false,gone={};S.con.forEach(function(c){if(c.part==2&&c.st==='Verify แล้ว'){if(!c.exp){c.exp=addDays(7);ch=true}}else if(c.exp){delete c.exp;ch=true}});
+ var keep=S.con.filter(function(c){if(c.exp&&c.exp<=t){gone[c.inf]=1;return false}return true});if(keep.length!==S.con.length){S.con=keep;ch=true}
+ var n=S.inf.length;S.inf=S.inf.filter(function(i){return !(gone[i.id]&&!S.con.some(function(c){return c.inf===i.id}))});if(S.inf.length!==n)ch=true;if(ch)save()}
+var _rd=render;render=function(){sweep();_rd()};
+var _fr3=fuRow;fuRow=function(c){var o=_fr3(c);if(c.part!=2||!c.exp)return o;var d=Math.max(0,Math.ceil((new Date(c.exp+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5));return o.replace('<span class="sp"></span><button class="bt s p" onclick="logM(','<span class="bd a">จะลบอัตโนมัติใน '+d+' วัน</span><span class="sp"></span><button class="bt s p" onclick="logM(')};
+var _ih10=impHtml;impHtml=function(){var all=S.camp;S.camp=all.filter(function(m){return m.part==2});try{return _ih10()}finally{S.camp=all}};
+render();
 </script></body></html>
