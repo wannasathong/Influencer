@@ -453,4 +453,17 @@ var _ih11=impHtml;impHtml=function(){var o=_ih11();return o.split('>ชื่อ
 /* ===== v12: รายได้สุทธิในข้อความ PART 1 ด้วย ===== */
 (function(){var add='{Scope}\n*รายได้สุทธิ {รายได้} บาท';if(DEFTPL[1][0].indexOf('{รายได้}')<0)DEFTPL[1][0]=DEFTPL[1][0].replace('{Scope}',add);
  var t=S.tpl&&S.tpl[1]&&S.tpl[1][0];if(t&&t.indexOf('{รายได้}')<0&&t.indexOf('{Scope}')>=0){S.tpl[1][0]=t.replace('{Scope}',add);save()}})();
+</script><script>
+/* ===== v13: ลบอัตโนมัติตามสถานะ + แสดงวันที่ติดต่อ ===== */
+function addTo(d,n){var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return ds(x)}
+function expDays(c){var s=c.st;if(s==='ปฏิเสธงาน'||s==='ไม่สามารถติดต่อได้')return 5;if(s==='ติดตามแล้ว')return c.part==2?7:14;if(c.part==2&&s==='Verify แล้ว')return 7;return 0}
+function sweep(){var t=today(),ch=false,gone={};
+ S.con.forEach(function(c){if(c.stLast===undefined||c.stLast!==c.st){c.stLast=c.st;c.stAt=t;ch=true}var d=expDays(c),base=(c.last&&c.last>c.stAt)?c.last:c.stAt,e=d?addTo(base,d):'';if((c.exp||'')!==e){if(e)c.exp=e;else delete c.exp;ch=true}});
+ var keep=S.con.filter(function(c){if(c.exp&&c.exp<=t){gone[c.inf]=1;return false}return true});if(keep.length!==S.con.length){S.con=keep;ch=true}
+ var n=S.inf.length;S.inf=S.inf.filter(function(i){return !(gone[i.id]&&!S.con.some(function(c){return c.inf===i.id}))});if(S.inf.length!==n)ch=true;if(ch)save()}
+var _fr4=fuRow;fuRow=function(c){var o=_fr4(c).replace(/<span class="bd a">จะลบอัตโนมัติใน \d+ วัน<\/span>/,'');
+ var f=(c.hist||[]).find(function(x){return x.st!=='ยังไม่ได้ติดต่อ'}),first=f?f.d:'';
+ o=o.replace('<span>ล่าสุด: ','<span>ติดต่อครั้งแรก: '+(first?fd(first):'ยังไม่ได้ติดต่อ')+'</span><span>ล่าสุด: ');
+ if(c.exp){var d=Math.max(0,Math.ceil((new Date(c.exp+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5));o=o.replace('<span class="sp"></span><button class="bt s p" onclick="logM(','<span class="bd a">จะลบอัตโนมัติ '+fd(c.exp)+' (อีก '+d+' วัน)</span><span class="sp"></span><button class="bt s p" onclick="logM(')}return o};
+render();
 </script></body></html>
