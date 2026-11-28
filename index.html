@@ -432,4 +432,25 @@ var _rd=render;render=function(){sweep();_rd()};
 var _fr3=fuRow;fuRow=function(c){var o=_fr3(c);if(c.part!=2||!c.exp)return o;var d=Math.max(0,Math.ceil((new Date(c.exp+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5));return o.replace('<span class="sp"></span><button class="bt s p" onclick="logM(','<span class="bd a">จะลบอัตโนมัติใน '+d+' วัน</span><span class="sp"></span><button class="bt s p" onclick="logM(')};
 var _ih10=impHtml;impHtml=function(){var all=S.camp;S.camp=all.filter(function(m){return m.part==2});try{return _ih10()}finally{S.camp=all}};
 render();
+</script><script>
+/* ===== v11: ชื่อบัญชี + กดแคมเปญแล้วบันทึกเข้า Follow-up ทันที ===== */
+function accName(r){var f=r.f,g,t=f.tiktok&&r.gen.tiktok!=='clip'?guessName(f.tiktok):'';if(t)return t;if(f.instagram&&(g=guessName(f.instagram)))return g;if(f.lemon8&&(g=guessName(f.lemon8)))return g;if(f.facebook){if(r.gen.facebook==='name'){try{return decodeURIComponent(f.facebook.split('q=')[1]||'')}catch(e){}}else if((g=guessName(f.facebook)))return g}if(f.line&&!/^https?:/i.test(f.line))return f.line;return ''}
+var _pc=parseComment;parseComment=function(txt,who){var r=_pc(txt,who);if(r){r.nick=r.name;var a=accName(r);if(a)r.name=a}return r};
+function mkInf(r){var fo=Object.keys(r.fol).filter(function(p){return r.fol[p]}).map(function(p){return SN[p]+' '+r.fol[p].toLocaleString('th-TH')}).join(', '),nt=[fo?'ผู้ติดตาม: '+fo:'',r.nick&&r.nick!==r.name?'ชื่อเล่น: '+r.nick:''].concat(r.extra).filter(Boolean).join('\n'),ty=$('#ity')?v('ity'):'';
+ return {id:uid(),name:r.name||'ไม่ระบุชื่อ',type:ty,followers:r.fl||'',tiktok:r.f.tiktok,instagram:r.f.instagram,facebook:r.f.facebook,lemon8:r.f.lemon8,line:r.f.line,email:r.f.email,note:nt}}
+function exInf(r){var ks=keysOf(Object.assign({name:''},r.f));return S.inf.find(function(x){return keysOf(x).some(function(k){return ks.indexOf(k)>=0})})}
+function commitP(i,cid,sent){var r=IMP[i],m=camp(cid);if(!r||!m)return;
+ if(!r.infId||!inf(r.infId)){var ex=exInf(r);if(ex){r.infId=ex.id;r.created=false}else{var o=mkInf(r);S.inf.push(o);r.infId=o.id;r.created=true}}
+ var c=S.con.find(function(x){return x.inf===r.infId&&x.camp===cid});if(!c){c=newCon(r.infId,m,r.qlink);S.con.push(c)}
+ if(sent){if(c.st==='ยังไม่ได้ติดต่อ')c.st=m.part==1?'ติดต่อแล้ว':'ส่งงานเสนอแล้ว';c.last=today();c.next=addDays(3);c.ch=c.ch||'TikTok';c.hist.push({d:today(),ch:c.ch,st:c.st,note:'ส่งข้อความ (จากหน้านำเข้า)'});r.sent=r.sent||{};r.sent[cid]=true}
+ save()}
+function tapCamp(i,cid){var r=IMP[i];r.camps[cid]=true;if(!r.dup)r.sel=true;commitP(i,cid,false);impSum();msgM(i,cid)}
+function unpick(i,cid){var r=IMP[i];delete r.camps[cid];if(r.sent)delete r.sent[cid];if(r.infId){S.con=S.con.filter(function(c){return !(c.inf===r.infId&&c.camp===cid)});if(r.created&&!S.con.some(function(c){return c.inf===r.infId})){S.inf=S.inf.filter(function(x){return x.id!==r.infId});r.infId=null;r.created=false}save()}impSum()}
+var _to3=tplOpen;tplOpen=function(src,m,c,ii){_to3(src,m,c,ii);if(ii==null)return;var ok=$('#mok');if(!ok)return;var old=ok.onclick;ok.onclick=function(){var p=v('tp');old.call(this);commitP(ii,m.id,true);var cc=S.con.find(function(x){return x.inf===IMP[ii].infId&&x.camp===m.id});if(cc&&p&&SN[p])cc.ch=SN[p];save();toast('คัดลอกแล้ว · บันทึกเป็น “'+(m.part==1?'ติดต่อแล้ว':'ส่งงานเสนอแล้ว')+'” ติดตามอีก 3 วัน');impSum()}};
+var _di2=doImport;doImport=function(){var pend=IMP.filter(function(r){return r.sel&&!r.dup&&!r.infId});if(!pend.length){var sv=IMP.filter(function(r){return r.infId}).length;if(sv){IMP=[];IMPIN=[];IMPSTAT={total:0,skip:[]};toast('บันทึกลง Follow-up ไว้แล้ว '+sv+' คน');go('fu')}else toast('ยังไม่ได้เลือกรายการ');return}IMP.forEach(function(r){if(r.infId)r.sel=false});_di2()};
+var _ih11=impHtml;impHtml=function(){var o=_ih11();return o.split('>ชื่อเล่น<').join('>ชื่อบัญชี<').replace(/onclick="tapCamp\((\d+),'(\w+)'\)"><b style="font-weight:600">✓ /g,function(a,i,cid){var r=IMP[i];return r&&r.sent&&r.sent[cid]?a+'ส่งแล้ว · ':a})};
+</script><script>
+/* ===== v12: รายได้สุทธิในข้อความ PART 1 ด้วย ===== */
+(function(){var add='{Scope}\n*รายได้สุทธิ {รายได้} บาท';if(DEFTPL[1][0].indexOf('{รายได้}')<0)DEFTPL[1][0]=DEFTPL[1][0].replace('{Scope}',add);
+ var t=S.tpl&&S.tpl[1]&&S.tpl[1][0];if(t&&t.indexOf('{รายได้}')<0&&t.indexOf('{Scope}')>=0){S.tpl[1][0]=t.replace('{Scope}',add);save()}})();
 </script></body></html>
